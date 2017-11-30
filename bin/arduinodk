@@ -9,7 +9,7 @@
 
 var fs = require("fs");
 var path = require("path");
-var local = "node_modules/arduinodk/src/cli.js";
+var local = path.join(process.cwd(), "node_modules/arduinodk/src/cli.js");
 var argv = process.argv.slice(2);
 var cli = null;
 
