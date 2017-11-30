@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /*!
- * dockerops
- * Copyright(c) 2016-2017 Javanile.org
+ * arduinodk
+ * Copyright(c) 2016-2017 Francesco Bianco
  * MIT Licensed
  */
 
@@ -9,7 +9,7 @@
 
 var fs = require("fs");
 var path = require("path");
-var local = path.join(process.cwd(), "node_modules/dockerops/src/cli.js");
+var local = "node_modules/arduinodk/src/cli.js";
 var argv = process.argv.slice(2);
 var cli = null;
 
