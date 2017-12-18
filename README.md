@@ -2,9 +2,12 @@
 
 Arduinodk is a command-line tool inspired by package manager like NPM and YARN.
 
-> If you are fascinated by the *package.json* then you will love *sketch.yml*
+> If you are fascinated by the **package.json** then you will love **sketch.yml**.
 
 ## Get Started
+```
+$ npm install -g arduinodk
+```
 
 ### Create project from scratch
 ```
