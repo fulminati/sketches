@@ -6,6 +6,7 @@
 
 var fs = require("fs"),
     path = require("path"),
+    yaml = require("yamljs"),
     util = require("./util"),
     dk = require("./dk");
 
@@ -34,9 +35,9 @@ module.exports = {
             return util.err("Undefined command '" + cmd + "', type 'arduinodk --help");
         }
 
-        var cfg = this.loadConfig(process.cwd());
+        var sketch = this.loadSketch(process.cwd());
 
-        return dk[fnc](cfg, args, flags, callback);
+        return dk[fnc](sketch, args, flags, callback);
     },
 
     /**
@@ -45,11 +46,11 @@ module.exports = {
      * @param args
      */
     getHelp: function (args) {
-        var help = path.join(__dirname, "../help/help.txt");
-        if (!args[0]) { return console.log(fs.readFileSync(help)+""); }
-        help = path.join(__dirname, "../help/" + args[0] + ".txt");
-        if (fs.existsSync(help)) { return console.log(fs.readFileSync(help)); }
-        return util.err("&cmd-undefined", { cmd: args[0] });
+        var cmd = util.getCmd(args, null);
+        if (!cmd) { return console.log(fs.readFileSync(path.join(__dirname, "../help/help.txt"))+""); }
+        var help = path.join(__dirname, "../help/" + cmd + ".txt");
+        if (!fs.existsSync(help)) { return util.err("Undefined command '" + cmd + "', type 'arduinodk --help"); }
+        return console.log(fs.readFileSync(help) + "");
     },
 
     /**
@@ -59,13 +60,29 @@ module.exports = {
      */
     getVersion: function () {
         var info = JSON.parse(fs.readFileSync(path.join(__dirname, "../package.json")), "utf8");
-        return info.name + "@" + info.version;
+        return console.log(info.name + "@" + info.version);
     },
 
     /**
      *
      */
-    loadConfig: function () {
+    loadSketch: function () {
+        var file = path.join(process.cwd(), "./sketch.yml");
 
+        if (!fs.existsSync(file)) {
+            return util.err("Missing sketch file, type 'arduinodk init");
+        }
+
+        sketch = yaml.load(file);
+
+        if (typeof sketch["name"] !== "string" ) {
+            sketch.name = path.basename(process.cwd());
+        }
+
+        if (typeof sketch["entrypoint"] !== "string" ) {
+            sketch.entrypoint = "src/" + sketch.name + "/" + sketch.name + ".ino";
+        }
+
+        return sketch;
     }
 };

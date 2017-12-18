@@ -1,10 +1,11 @@
 /*!
- * dockerops
+ * arduinodk
  * Copyright(c) 2016-2017 Javanile.org
  * MIT Licensed
  */
 
 var fs = require("fs"),
+    sudo = require("sudo"),
     join = require("path").join,
     spawn = require("child_process").spawn,
     exec = require("child_process").execSync,
@@ -15,50 +16,17 @@ var fs = require("fs"),
 module.exports = {
 
     /**
-     * Contain current working direcotry.
-     *
-     * @var string
-     */
-    cwd: process.cwd(),
-
-    /**
-     * Contain current working direcotry.
-     *
-     * @var array
-     */
-    environments: ["--dev", "--demo", "--test", "--uat", "--prod"],
-
-    /**
-     * Defaults docker-compose commands.
-     *
-     * @var array
-     */
-    defaults: [
-        "build", "bundle", "config", "create", "down", "events",
-        "exec", "help", "kill", "logs", "pause", "port", "ps",
-        "pull", "push", "restart", "rm", "run", "scale",
-        "start", "stop", "unpause", "up", "version"
-    ],
-
-    /**
      * Perform "docker-compose up" base command.
      *
      * @param args
      */
-    cmdUp: function (args, opts, callback) {
+    cmdVerify: function (sketch, args, opts, callback) {
         var params = [];
-        if (this.hasEnvironment(args)) {
-            params = params.concat(this.getEnvironmentParams(args));
-            args = this.removeEnvironment(args);
-        }
 
-        params.push("up");
-        params.push("-d");
-        params.push("--remove-orphans");
+        params.push("--verify");
+        params.push(sketch.entrypoint);
 
-        if (args) { params = params.concat(args); }
-
-        return this.compose(params, opts, callback);
+        return this.arduino(sketch, params, opts, callback);
     },
 
     /**
@@ -194,8 +162,13 @@ module.exports = {
      *
      * @param args
      */
-    compose: function (params, opts, callback) {
-        return this.exec("docker-compose", params, opts, function (output) {
+    arduino: function (sketch, params, opts, callback) {
+
+        var arduino = sketch.arduino;
+
+        opts["sudo"] = false;
+
+        return this.exec(arduino, params, opts, function (output) {
             callback(output);
         });
     },
@@ -265,17 +238,15 @@ module.exports = {
      * Exec command with spawn.
      */
     exec: function (cmd, params, opts, callback) {
-        process.env['DOCKEROPS_HOST_USER'] = user.sync();
-        process.env['DOCKEROPS_HOST_GROUP'] = util.getGroup();
-
         var rawCommand = cmd + " " + params.join(" ");
 
-        if (util.isEnabled(opts, 'showInfo')) {
+        if (true) {
             util.info("exec", rawCommand);
         }
 
         // Running command
-        var wrapper = spawn(cmd, params);
+        var wrapper = util.isEnabled(opts, "sudo")
+            ? sudo([cmd].concat(params)) : spawn(cmd, params);
 
         // Attach stdout handler
         wrapper.stdout.on("data", function (data) {

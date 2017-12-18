@@ -1,6 +1,6 @@
 {
     "name": "arduinodk",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "license": "MIT",
     "author": {
         "name": "Francesco Bianco",
@@ -17,14 +17,16 @@
         "test": "mocha --reporter spec --recursive | sed '/^\\s*$/d'",
         "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec --recursive"
     },
+    "dependencies": {
+        "colors": "^1.1.2",
+        "sudo": "^1.0.3",
+        "username": "^3.0.0",
+        "wordwrap": "^1.0.0",
+        "yamljs": "^0.3.0"
+    },
     "devDependencies": {
         "chai": "^3.5.0",
         "chai-fs": "^1.0.0",
         "mocha": "^3.2.0"
-    },
-    "dependencies": {
-        "colors": "^1.1.2",
-        "username": "^3.0.0",
-        "wordwrap": "^1.0.0"
     }
 }
