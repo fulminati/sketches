@@ -4,13 +4,20 @@
  * MIT Licensed
  */
 
-var fs = require("fs"),
-    path = require("path"),
-    yaml = require("yamljs"),
-    util = require("./util"),
-    dk = require("./dk");
+const fs = require("fs")
+    , path = require("path")
+    , cliz = require('cliz')
+    , util = require("./util")
+    , adk = require("./adk")
 
 module.exports = {
+
+    /**
+     *
+     */
+    options: {
+        info: false
+    },
 
     /**
      * Command line entry-point.
@@ -18,26 +25,25 @@ module.exports = {
      * @param {array} args a list of arguments
      * @returns {string}
      */
-    run: function(args, callback) {
-        var param = -1;
-        var flags = {};
+    run: function(args, cb) {
+        args = args || []
 
-        if (typeof args == "undefined" || !args) { args = []; }
-        if (param = args.indexOf("--info") > -1) { flags['showInfo'] = true; args.splice(param, 1); }
-        if (param = args.indexOf("--help") > -1) { return this.getHelp(args); }
-        if (param = args.indexOf("--version") > -1) { return this.getVersion(args); }
+        this.options.info = cliz.option(args, '--info')
 
-        var cmd = util.getCmd(args, null);
-        if (!cmd) { return util.err("Missing command, type 'arduinodk --help'."); }
+        if (cliz.has(args, '--help')) { return this.help(args, cb) }
+        if (cliz.has(args, '--version')) { return this.version(cb) }
 
-        var fnc = "cmd" + cmd.charAt(0).toUpperCase() + cmd.slice(1).toLowerCase();
-        if (typeof dk[fnc] !== "function") {
-            return util.err("Undefined command '" + cmd + "', type 'arduinodk --help");
+        var cmd = cliz.command(args);
+
+        if (!cmd) {
+            return cliz.error("Missing command, type: 'arduinodk --help'", cb)
         }
 
-        var sketch = this.loadSketch(process.cwd());
+        if (!adk.commands.hasOwnProperty(cmd)) {
+            return cliz.error("Undefinend command: '" + cmd + "'", cb)
+        }
 
-        return dk[fnc](sketch, args, flags, callback);
+        return adk[adk.commands[cmd]](cmd, args, cb)
     },
 
     /**
@@ -45,12 +51,8 @@ module.exports = {
      *
      * @param args
      */
-    getHelp: function (args) {
-        var cmd = util.getCmd(args, null);
-        if (!cmd) { return console.log(fs.readFileSync(path.join(__dirname, "../help/help.txt"))+""); }
-        var help = path.join(__dirname, "../help/" + cmd + ".txt");
-        if (!fs.existsSync(help)) { return util.err("Undefined command '" + cmd + "', type 'arduinodk --help"); }
-        return console.log(fs.readFileSync(help) + "");
+    help: function (args, cb) {
+        return cliz.help(__dirname + '/../help/', args, cb);
     },
 
     /**
@@ -58,7 +60,7 @@ module.exports = {
      *
      * @param args
      */
-    getVersion: function () {
+    version: function () {
         var info = JSON.parse(fs.readFileSync(path.join(__dirname, "../package.json")), "utf8");
         return console.log(info.name + "@" + info.version);
     },

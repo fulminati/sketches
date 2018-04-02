@@ -4,16 +4,23 @@
  * MIT Licensed
  */
 
-var fs = require("fs"),
-    sudo = require("sudo"),
-    join = require("path").join,
-    spawn = require("child_process").spawn,
-    exec = require("child_process").execSync,
-    user = require('username'),
-    base = require("path").basename,
-    util = require("./util");
+const fs = require("fs")
+    , sudo = require("sudo")
+    , join = require("path").join
+    , spawn = require("child_process").spawn
+    , exec = require("child_process").execSync
+    , user = require('username')
+    , base = require("path").basename
+    , util = require("./util")
 
 module.exports = {
+
+    /**
+     *
+     */
+    commands: {
+        package: 'commandPackage'
+    },
 
     /**
      * Perform "docker-compose up" base command.

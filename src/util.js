@@ -23,21 +23,6 @@ module.exports = {
         return this.indent("(ndev)  ", this.applyTokens(msg, tokens));
     },
 
-    /**
-     * Print error message.
-     *
-     * @param msg
-     */
-    err: function (msg, tokens) {
-        switch (msg) {
-            case "&cmd-undefined": msg = "Undefined command '${cmd}', type 'ndev --help'."; break;
-            case "&cmd-required":  msg = "Command required, type 'ndev --help'."; break;
-        }
-        return console.log(
-            col.red.bold("<<error>>"),
-            col.white(this.applyTokens(msg, tokens))
-        );
-    },
 
     /**
      *
@@ -119,24 +104,6 @@ module.exports = {
     getGroup: function () {
         return exec("id -g -n");
     },
-
-    /**
-     *
-     */
-    getCmd: function (args, defaults) {
-        var cmd = defaults;
-        for (var i in args) {
-            if (!args.hasOwnProperty(i)) {
-                continue;
-            }
-            if (args[i].charAt(0) != "-") {
-                cmd = args[i];
-                args.splice(i, 1);
-                break;
-            }
-        }
-        return cmd;
-    }
 };
 
 
