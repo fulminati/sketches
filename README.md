@@ -2,7 +2,7 @@
 
 Arduinodk is a command-line tool inspired by package manager like NPM and YARN.
 
-> If you are fascinated by the **package.json** then you will love **sketch.yml**.
+> If you are fascinated by the **package.json** then you will love **sketches.yml**.
 
 ## Get Started
 ```
@@ -25,7 +25,7 @@ $ arduinodk clone <remote-git-repository>
 ## Configure your project
 Every Arduinodk project are configured by 'sketch.yml' file
 ```yml
-# Simple 'sketch.yml' file
+# Simple 'sketches.yml' file
 name: "MyArduinoProject"
 board: "package:arch:board[:parameters]"
 ```

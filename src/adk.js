@@ -6,6 +6,7 @@
 
 const fs = require("fs")
     , sudo = require("sudo")
+    , cliz = require('cliz')
     , join = require("path").join
     , spawn = require("child_process").spawn
     , exec = require("child_process").execSync
@@ -18,8 +19,69 @@ module.exports = {
     /**
      *
      */
+    options: {
+        configFile: 'sketches.yml',
+        info: false
+    },
+
+    /**
+     *
+     */
+    config: {
+        version: 1,
+        sketches: {}
+    },
+
+    /**
+     *
+     */
     commands: {
-        package: 'commandPackage'
+        sketch: 'commandSketch',
+        verify: 'commandVerify'
+    },
+
+    /**
+     *
+     */
+    applyConfig: function () {
+        this.config = cliz.config(this.options.configFile, this.config)
+
+        for (var sketch in this.config.sketches) {
+            if (this.config.sketches.hasOwnProperty(sketch)) {
+                var name = sketch
+                this.config.sketches[sketch]['entrypoint'] = 'sketches/' + name + '/' + name + '.ino'
+                this.config.sketches[sketch]['name'] = name
+            }
+        }
+    },
+
+    /**
+     *
+     */
+    requireSketch: function (cmd, args, cb) {
+        var sketch = cliz.command(args)
+
+        return sketch
+    },
+
+    /**
+     *
+     */
+    loadSketch: function () {
+        var file = path.join(process.cwd(), "./sketch.yml");
+
+        if (!fs.existsSync(file)) {
+            return util.err("Missing sketch file, type 'arduinodk init");
+        }
+
+        sketch = yaml.load(file);
+
+        if (typeof sketch["name"] !== "string" ) {
+            sketch.name = path.basename(process.cwd());
+        }
+
+
+        return sketch;
     },
 
     /**
@@ -27,7 +89,7 @@ module.exports = {
      *
      * @param args
      */
-    cmdVerify: function (sketch, args, opts, callback) {
+    commandDeploy: function (cmd, args, cb) {
         var params = [];
 
         params.push("--verify");
@@ -41,19 +103,18 @@ module.exports = {
      *
      * @param args
      */
-    cmdPs: function (args, opts, callback) {
-        var params = [];
-        if (this.hasEnvironment(args)) {
-            params = params.concat(this.getEnvironmentParams(args));
-            args = this.removeEnvironment(args);
+    commandVerify: function (cmd, args, cb) {
+        var sketch = this.requireSketch(cmd, args, cb)
+
+        if (sketch) {
+            var params = ['--verify', this.config.sketches[sketch].entrypoint]
+
+            this.applyFilters(sketch)
+
+            return this.arduino(params, function () {
+
+            });
         }
-
-        params.push("ps");
-        params = params.concat(args);
-
-        //opts['hideStdErr'] = false;
-
-        return this.compose(params, opts, callback);
     },
 
     /**
@@ -165,31 +226,14 @@ module.exports = {
     },
 
     /**
-     * Perform "docker-compose" base command.
+     * Perform arduino command.
      *
      * @param args
      */
-    arduino: function (sketch, params, opts, callback) {
+    arduino: function (params, cb) {
+        var arduino = this.config.arduino;
 
-        var arduino = sketch.arduino;
-
-        opts["sudo"] = false;
-
-        return this.exec(arduino, params, opts, function (output) {
-            callback(output);
-        });
-    },
-
-    /**
-     * Stop all running containers.
-     *
-     */
-    dockerStopAll: function (args, opts, callback) {
-        opts['showInfo'] = true;
-        var containers = exec("docker ps -q -a")+"";
-        containers = containers.trim().split("\n");
-        opts['hideStdOut'] = true;
-        return this.exec("docker", ["stop"].concat(containers), opts, callback);
+        return this.exec(arduino, params, function (out) { cb(out) });
     },
 
     /**
@@ -244,7 +288,7 @@ module.exports = {
     /**
      * Exec command with spawn.
      */
-    exec: function (cmd, params, opts, callback) {
+    exec: function (cmd, params, cb) {
         var rawCommand = cmd + " " + params.join(" ");
 
         if (true) {

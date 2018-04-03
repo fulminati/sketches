@@ -1,1 +1,3 @@
-Dockerops - Super-fantastic wrapper for docker-compose operations
+
+verify [sketch]     Verify sketch code
+sketch [sketch]     Create new project sketch

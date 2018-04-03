@@ -4,20 +4,12 @@
  * MIT Licensed
  */
 
-const fs = require("fs")
-    , path = require("path")
+const fs = require('fs')
     , cliz = require('cliz')
-    , util = require("./util")
-    , adk = require("./adk")
+    , util = require('./util')
+    , adk = require('./adk')
 
 module.exports = {
-
-    /**
-     *
-     */
-    options: {
-        info: false
-    },
 
     /**
      * Command line entry-point.
@@ -27,8 +19,9 @@ module.exports = {
      */
     run: function(args, cb) {
         args = args || []
+        cb = cb || function () {}
 
-        this.options.info = cliz.option(args, '--info')
+        adk.options.info = cliz.option(args, '--info')
 
         if (cliz.has(args, '--help')) { return this.help(args, cb) }
         if (cliz.has(args, '--version')) { return this.version(cb) }
@@ -42,6 +35,12 @@ module.exports = {
         if (!adk.commands.hasOwnProperty(cmd)) {
             return cliz.error("Undefinend command: '" + cmd + "'", cb)
         }
+
+        if (!cliz.fileExists(adk.options.configFile)) {
+            return cliz.error("Sketches file '" + adk.options.configFile + "' not found", cb)
+        }
+
+        adk.applyConfig();
 
         return adk[adk.commands[cmd]](cmd, args, cb)
     },
@@ -60,31 +59,7 @@ module.exports = {
      *
      * @param args
      */
-    version: function () {
-        var info = JSON.parse(fs.readFileSync(path.join(__dirname, "../package.json")), "utf8");
-        return console.log(info.name + "@" + info.version);
-    },
-
-    /**
-     *
-     */
-    loadSketch: function () {
-        var file = path.join(process.cwd(), "./sketch.yml");
-
-        if (!fs.existsSync(file)) {
-            return util.err("Missing sketch file, type 'arduinodk init");
-        }
-
-        sketch = yaml.load(file);
-
-        if (typeof sketch["name"] !== "string" ) {
-            sketch.name = path.basename(process.cwd());
-        }
-
-        if (typeof sketch["entrypoint"] !== "string" ) {
-            sketch.entrypoint = "src/" + sketch.name + "/" + sketch.name + ".ino";
-        }
-
-        return sketch;
+    version: function (cb) {
+        return cliz.version(__dirname + '/../package.json', cb)
     }
-};
+}
