@@ -5,7 +5,6 @@
  */
 
 const fs = require("fs")
-    , sudo = require("sudo")
     , cliz = require('cliz')
     , join = require("path").join
     , spawn = require("child_process").spawn
@@ -43,16 +42,54 @@ module.exports = {
     /**
      *
      */
-    applyConfig: function () {
+    filters: {},
+
+    /**
+     *
+     */
+    registerConfig: function () {
         this.config = cliz.config(this.options.configFile, this.config)
 
         for (var sketch in this.config.sketches) {
             if (this.config.sketches.hasOwnProperty(sketch)) {
-                var name = sketch
-                this.config.sketches[sketch]['entrypoint'] = 'sketches/' + name + '/' + name + '.ino'
-                this.config.sketches[sketch]['name'] = name
+                this.registerSketch(sketch)
             }
         }
+    },
+
+    /**
+     *
+     */
+    registerSketch: function (sketch) {
+        var name = sketch
+
+        this.config.sketches[sketch]['entrypoint'] = 'sketches/' + name + '/' + name + '.ino'
+        this.config.sketches[sketch]['path'] = process.cwd() + '/sketches/' + name
+        this.config.sketches[sketch]['name'] = name
+        this.config.sketches[sketch]['filters'] = this.registerFilters(sketch)
+    },
+
+    /**
+     *
+     * @param sketch
+     */
+    registerFilters: function (sketch) {
+        var filters = this.config.sketches[sketch]['filters'] || []
+
+        for (var i in filters) {
+            if (filters.hasOwnProperty(i)) {
+                var filter = filters[i];
+                if (!this.filters.hasOwnProperty(filter)) {
+                    if (cliz.fileExists(__dirname + '/filters/' + filter + '.js')) {
+                        this.filters[filter] = require('./filters/' + filter);
+                    } else {
+                        cliz.error("Undefined filter '" + filters[i] + "' in '" + sketch + "' sketch")
+                    }
+                }
+            }
+        }
+
+        return filters
     },
 
     /**
@@ -67,21 +104,19 @@ module.exports = {
     /**
      *
      */
-    loadSketch: function () {
-        var file = path.join(process.cwd(), "./sketch.yml");
+    applyFilters: function (event, sketch) {
+        var filters = this.config.sketches[sketch].filters;
 
-        if (!fs.existsSync(file)) {
-            return util.err("Missing sketch file, type 'arduinodk init");
+        for (var i in filters) {
+            if (filters.hasOwnProperty(i)) {
+                var filter = filters[i]
+                if (this.filters.hasOwnProperty(filter)) {
+                    if (typeof this.filters[filter][event] === 'function') {
+                        this.filters[filter][event](this.config.sketches[sketch])
+                    }
+                }
+            }
         }
-
-        sketch = yaml.load(file);
-
-        if (typeof sketch["name"] !== "string" ) {
-            sketch.name = path.basename(process.cwd());
-        }
-
-
-        return sketch;
     },
 
     /**
@@ -104,15 +139,16 @@ module.exports = {
      * @param args
      */
     commandVerify: function (cmd, args, cb) {
-        var sketch = this.requireSketch(cmd, args, cb)
+        var adk = this;
+        var sketch = adk.requireSketch(cmd, args, cb)
 
         if (sketch) {
             var params = ['--verify', this.config.sketches[sketch].entrypoint]
 
-            this.applyFilters(sketch)
+            this.applyFilters('onBeforeVerify', sketch)
 
-            return this.arduino(params, function () {
-
+            return adk.arduino(params, function () {
+                adk.applyFilters('onAfterVerify', sketch)
             });
         }
     },
@@ -233,7 +269,7 @@ module.exports = {
     arduino: function (params, cb) {
         var arduino = this.config.arduino;
 
-        return this.exec(arduino, params, function (out) { cb(out) });
+        return this.spawn(arduino, params, function (out) { cb(out) });
     },
 
     /**
@@ -288,44 +324,31 @@ module.exports = {
     /**
      * Exec command with spawn.
      */
-    exec: function (cmd, params, cb) {
-        var rawCommand = cmd + " " + params.join(" ");
+    spawn: function (cmd, params, cb) {
+        var raw = cmd + ' ' + params.join(' ');
 
         if (true) {
-            util.info("exec", rawCommand);
+            util.info('spawn', raw);
         }
 
-        // Running command
-        var wrapper = util.isEnabled(opts, "sudo")
-            ? sudo([cmd].concat(params)) : spawn(cmd, params);
+        var wrapper = spawn(cmd, params);
 
         // Attach stdout handler
-        wrapper.stdout.on("data", function (data) {
-            if (util.isEnabled(opts, 'hideStdOut')) { return; }
+        wrapper.stdout.on('data', function (data) {
             process.stdout.write(data.toString());
         });
 
         // Attach stderr handler
-        wrapper.stderr.on("data", function (data) {
-            if (util.isEnabled(opts, 'hideStdErr')) { return; }
+        wrapper.stderr.on('data', function (data) {
             process.stdout.write(data.toString());
         });
 
         // Attach exit handler
-        wrapper.on("exit", function (code) {
+        wrapper.on('exit', function (code) {
             var code = code.toString();
-            var info = util.isEnabled(opts, 'showInfo');
-            if (!info && code != "0") {
-                info = true
-                util.info("exec", rawCommand);
-            }
-            if (info) {
-                var msg = "sounds like success.";
-                if (code != "0") { msg = "some error occurred."; }
-                util.info("done",  "(exit="+code+") " + msg);
-            }
+            cb(code)
         });
 
-        return rawCommand;
+        return raw;
     }
 };

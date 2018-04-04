@@ -8,7 +8,6 @@ var fs = require("fs");
 var join = require("path").join;
 var spawn = require("child_process").spawn;
 var exec = require("child_process").execSync;
-var wrap = require('wordwrap');
 var user = require("username");
 var col = require("colors");
 
@@ -32,7 +31,7 @@ module.exports = {
     info: function (key, msg) {
         var offset = 11 + key.length;
         var column = process.stdout.columns - offset;
-        msg = this.indent(wrap(column)(msg), offset);
+        //msg = this.indent(wrap(column)(msg), offset);
         console.log(col.yellow.bold("<<info>> "+key+":"), col.white(msg));
     },
 

@@ -1,6 +1,6 @@
 {
     "name": "arduinodk",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "license": "MIT",
     "author": {
         "name": "Francesco Bianco",
@@ -19,10 +19,9 @@
     },
     "dependencies": {
         "colors": "^1.1.2",
-        "sudo": "^1.0.3",
-        "username": "^3.0.0",
-        "wordwrap": "^1.0.0",
-        "yamljs": "^0.3.0"
+        "glob": "^7.1.2",
+        "html-minifier": "^3.5.13",
+        "username": "^3.0.0"
     },
     "devDependencies": {
         "chai": "^3.5.0",
