@@ -11,7 +11,7 @@ module.exports = {
     /**
      *
      */
-    selector: filter.selector('loadhtml'),
+    selector: filter.selector('loadcss'),
 
     /**
      *
@@ -35,7 +35,7 @@ module.exports = {
      * @param sketch
      */
     processBefore: function (sketch) {
-        var files = glob.sync('**/*.{ino,h}', { cwd: sketch.path, absolute: true })
+        var files = glob.sync('**/*.ino', { cwd: sketch.path, absolute: true })
 
         foreach(files, (file) => {
             var code = fu.readFile(file)

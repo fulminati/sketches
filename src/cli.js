@@ -4,7 +4,7 @@
  * MIT Licensed
  */
 
-const fs = require('fs')
+const fu = require('nodejs-fu')
     , cliz = require('cliz')
     , util = require('./util')
     , adk = require('./adk')
@@ -36,7 +36,7 @@ module.exports = {
             return cliz.error("Undefinend command: '" + cmd + "'", cb)
         }
 
-        if (!cliz.fileExists(adk.options.configFile)) {
+        if (!fu.fileExists(adk.options.configFile)) {
             return cliz.error("Sketches file '" + adk.options.configFile + "' not found", cb)
         }
 

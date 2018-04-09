@@ -4,13 +4,14 @@
  * MIT Licensed
  */
 
-const fs = require("fs")
+const fu = require('nodejs-fu')
     , cliz = require('cliz')
     , join = require("path").join
     , spawn = require("child_process").spawn
     , exec = require("child_process").execSync
     , user = require('username')
     , base = require("path").basename
+    , foreach = require('boor').foreach
     , util = require("./util")
 
 module.exports = {
@@ -29,7 +30,8 @@ module.exports = {
     config: {
         version: 1,
         sketches: {},
-        includes: {}
+        includes: {},
+        packages: []
     },
 
     /**
@@ -52,11 +54,9 @@ module.exports = {
     registerConfig: function () {
         this.config = cliz.config(this.options.configFile, this.config)
 
-        for (var sketch in this.config.sketches) {
-            if (this.config.sketches.hasOwnProperty(sketch)) {
-                this.registerSketch(sketch)
-            }
-        }
+        foreach(this.config.sketches, (sketch) => {
+            this.registerSketch(sketch.name)
+        })
     },
 
     /**
@@ -82,7 +82,7 @@ module.exports = {
             if (filters.hasOwnProperty(i)) {
                 var filter = filters[i];
                 if (!this.filters.hasOwnProperty(filter)) {
-                    if (cliz.fileExists(__dirname + '/filters/' + filter + '.js')) {
+                    if (fu.fileExists(__dirname + '/filters/' + filter + '.js')) {
                         this.filters[filter] = require('./filters/' + filter);
                     } else {
                         cliz.error("Undefined filter '" + filters[i] + "' in '" + sketch + "' sketch")
@@ -161,7 +161,12 @@ module.exports = {
      * @param args
      */
     commandInstall: function (cmd, args, cb) {
-        var includes = this.config.includes;
+        foreach(this.config.packages, function (package) {
+            console.log(package)
+        });
+
+
+        var includes = this.config.includes
 
         for (var include in includes) {
             if (includes.hasOwnProperty(include)) {
