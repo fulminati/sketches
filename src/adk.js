@@ -28,7 +28,8 @@ module.exports = {
      */
     config: {
         version: 1,
-        sketches: {}
+        sketches: {},
+        includes: {}
     },
 
     /**
@@ -36,7 +37,8 @@ module.exports = {
      */
     commands: {
         sketch: 'commandSketch',
-        verify: 'commandVerify'
+        verify: 'commandVerify',
+        install: 'commandInstall'
     },
 
     /**
@@ -154,111 +156,18 @@ module.exports = {
     },
 
     /**
-     * Perform "docker-compose run" base command.
+     * Perform "docker-compose ps" base command.
      *
      * @param args
      */
-    cmdStop: function (args, opts, callback) {
-        if (args && args.indexOf("--all") > -1) {
-            return this.dockerStopAll(args, opts, callback)
-        }
+    commandInstall: function (cmd, args, cb) {
+        var includes = this.config.includes;
 
-        var params = [];
-        if (this.hasEnvironment(args)) {
-            params = params.concat(this.getEnvironmentParams(args));
-            args = this.removeEnvironment(args);
-        }
-
-        params.push("stop");
-        params = params.concat(args);
-
-        return this.compose(params, opts, callback);
-    },
-
-    /**
-     * Perform "docker-compose run" base command.
-     *
-     * @param args
-     */
-    cmdRun: function (args, opts, callback) {
-        var params = [];
-        if (this.hasEnvironment(args)) {
-            params = params.concat(this.getEnvironmentParams(args));
-            args = this.removeEnvironment(args);
-        }
-
-        params.push("run");
-
-        if (args) { params = params.concat(args); }
-
-        return this.compose(params, opts, callback);
-    },
-
-    /**
-     * Perform "docker-compose exec" base command.
-     *
-     * @param args
-     */
-    cmdExec: function (args, opts, callback) {
-        var params = [];
-        if (this.hasEnvironment(args)) {
-            params = params.concat(this.getEnvironmentParams(args));
-            args = this.removeEnvironment(args);
-        }
-
-        params.push("exec");
-
-        for (var i in args) {
-            if (!args.hasOwnProperty(i)) { continue; }
-            if (args[i] == "--mysql-import") {
-                var next = parseInt(i) + 1;
-                if (!args[next]) {
-                    return util.err("File to import missing, type filename after --mysql-import");
-                }
-                if (args.indexOf("bash") == -1) { params.push("bash"); }
-                params.push("-c");
-                params.push('"mysql -h127.0.0.1 -uroot -p\\$MYSQL_ROOT_PASSWORD \\$MYSQL_DATABASE < '+args[next]+'"');
+        for (var include in includes) {
+            if (includes.hasOwnProperty(include)) {
+                exec('cd includes && git clone ' + includes[include].repository + ' ' + include);
             }
-            params.push(args[i]);
         }
-
-        return this.compose(params, opts, callback);
-    },
-
-    /**
-     * Perform "docker-compose exec" base command.
-     *
-     * @param args
-     */
-    cmdDebug: function (args, opts, callback) {
-        var params = [];
-        if (this.hasEnvironment(args)) {
-            params = params.concat(this.getEnvironmentParams(args));
-            args = this.removeEnvironment(args);
-        }
-
-        params.push("up");
-
-        if (args) { params = params.concat(args); }
-
-        return this.compose(params, opts, callback);
-    },
-
-    /**
-     * Perform "docker-compose up" base command.
-     *
-     * @param args
-     */
-    runDefault: function (args, opts, callback) {
-        var params = [];
-        if (this.hasEnvironment(args)) {
-            params = params.concat(this.getEnvironmentParams(args));
-            args = this.removeEnvironment(args);
-        }
-
-        if (args) { params = params.concat(args); }
-
-        return this.compose(params, opts, callback);
     },
 
     /**
@@ -270,55 +179,6 @@ module.exports = {
         var arduino = this.config.arduino;
 
         return this.spawn(arduino, params, function (out) { cb(out) });
-    },
-
-    /**
-     * Check if args contain envrironment specification.
-     *
-     */
-    hasEnvironment: function (args) {
-        for (var i in this.environments) {
-            if (args.indexOf(this.environments[i]) > -1) {
-                return true;
-            }
-        }
-        return false;
-    },
-
-    /**
-     * Get docker-compose argument based on environment.
-     *
-     */
-    getEnvironmentParams: function (args) {
-        var params = []
-
-        if (fs.existsSync(join(this.cwd, "docker-compose.yml"))) {
-            params = params.concat(["-f", "docker-compose.yml"]);
-        }
-
-        for (var i in args) {
-            var env = args[i];
-            if (this.environments.indexOf(env) > -1) {
-                var file = "docker-compose."+env.substr(2)+".yml";
-                if (fs.existsSync(join(this.cwd, file))) {
-                    params = params.concat(["-f", file]);
-                }
-            }
-        }
-
-        return params;
-    },
-
-    /**
-     * Remove environmnent argument on a list of args.
-     *
-     */
-    removeEnvironment: function (args) {
-        for (var i in this.environments) {
-            var env = args.indexOf(this.environments[i]);
-            if (env > -1) { args.splice(env, 1); }
-        }
-        return args;
     },
 
     /**
