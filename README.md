@@ -51,4 +51,6 @@ $ arduinodk upload
 
 ## References
  - https://github.com/arduino/Arduino/blob/ide-1.5.x/build/shared/manpage.adoc
+ - https://www.anginf.de/?p=600
+ 
  
