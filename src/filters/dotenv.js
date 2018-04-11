@@ -39,9 +39,9 @@ module.exports = {
 
         foreach(files, (file) => {
             var code = fu.readFile(file)
-            if (code.match(loadhtml.selector)) {
-                fu.writeFile(file + '.loadhtml', code)
-                fu.writeFile(file, loadhtml.processSelectors(dirname(file), code))
+            if (code.match(this.selector)) {
+                fu.writeFile(file + '.dotenv', code)
+                fu.writeFile(file, this.processSelectors(code))
             }
         })
     },
@@ -52,11 +52,10 @@ module.exports = {
      */
     processAfter: function (sketch) {
         var loadhtml = this
-        var files = glob.sync('**/*.loadhtml', { cwd: sketch.path, absolute: true })
+        var files = glob.sync('**/*.dotenv', { cwd: sketch.path, absolute: true })
 
         foreach(files, function(file) {
-            var code = fu.readFile(file)
-            fu.writeFile(file.slice(0, -9), code)
+            fu.writeFile(file.slice(0, -7), fu.readFile(file))
             fu.unlink(file)
         });
     },
@@ -67,23 +66,9 @@ module.exports = {
      * @param code
      * @returns {string | void}
      */
-    processSelectors: function (path, code) {
-        return code.replace(this.selector, function (token, file) {
-            file = path + '/' + file;
-            if (fu.fileExists(file)) {
-                return '"' + minify(fu.readFile(file), {
-                    removeComments: true,
-                    collapseWhitespace: true,
-                    conservativeCollapse: false,
-                    collapseInlineTagWhitespace: true,
-                    collapseBooleanAttributes: true,
-                    removeAttributeQuotes: true,
-                    removeTagWhitespace: true,
-                    processScripts: ['text/ng-template'],
-                    minifyCSS: true,
-                    minifyJS: { mangle: false }
-                }).replace(/"/, '\\"') + '"'
-            }
+    processSelectors: function (code) {
+        return code.replace(this.selector, function (token, variable) {
+            return 'HELLO'
         })
     }
 }

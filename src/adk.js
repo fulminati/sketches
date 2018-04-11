@@ -12,6 +12,7 @@ const fu = require('nodejs-fu')
     , user = require('username')
     , base = require("path").basename
     , foreach = require('boor').foreach
+    , prefs = require("./prefs")
     , util = require("./util")
 
 module.exports = {
@@ -51,11 +52,73 @@ module.exports = {
     /**
      *
      */
+    preferences: {},
+
+    /**
+     *
+     */
+    env: {
+        ARDUINO: ''
+    },
+
+    /**
+     *
+     */
+    run: function (cmd, args, cb) {
+        this.register();
+        this[this.commands[cmd]](cmd, args, cb)
+    },
+
+    /**
+     *
+     */
+    register: function () {
+        this.registerPreferences()
+        this.registerEnvironment()
+        this.registerConfig()
+        this.registerSketches()
+        this.registerIncludes()
+    },
+
+    /**
+     *
+     */
+    registerEnvironment: function () {
+        //
+    },
+
+    /**
+     *
+     */
+    registerPreferences: function () {
+        this.preferences = prefs.load()
+    },
+
+    /**
+     *
+     */
     registerConfig: function () {
         this.config = cliz.config(this.options.configFile, this.config)
+    },
 
-        foreach(this.config.sketches, (sketch) => {
-            this.registerSketch(sketch.name)
+    /**
+     *
+     */
+    registerSketches: function () {
+        foreach(this.config.sketches, 'keys', (sketch) => {
+            this.registerSketch(sketch)
+        })
+    },
+
+    /**
+     *
+     */
+    registerIncludes: function () {
+        foreach(this.config.includes, (name, include) => {
+            include.name = include.name || name
+            if (!include.link) {
+                console.log('!! missing include link:', name)
+            }
         })
     },
 
@@ -99,22 +162,21 @@ module.exports = {
      */
     requireSketch: function (cmd, args, cb) {
         var sketch = cliz.command(args)
-
-        return sketch
+        return this.config.sketches[sketch]
     },
 
     /**
      *
      */
     applyFilters: function (event, sketch) {
-        var filters = this.config.sketches[sketch].filters;
+        var filters = sketch.filters;
 
         for (var i in filters) {
             if (filters.hasOwnProperty(i)) {
                 var filter = filters[i]
                 if (this.filters.hasOwnProperty(filter)) {
                     if (typeof this.filters[filter][event] === 'function') {
-                        this.filters[filter][event](this.config.sketches[sketch])
+                        this.filters[filter][event](sketch)
                     }
                 }
             }
@@ -141,16 +203,19 @@ module.exports = {
      * @param args
      */
     commandVerify: function (cmd, args, cb) {
-        var adk = this;
-        var sketch = adk.requireSketch(cmd, args, cb)
+        let sketch = this.requireSketch(cmd, args, cb)
 
         if (sketch) {
-            var params = ['--verify', this.config.sketches[sketch].entrypoint]
+            var params = [
+                '--board', sketch.board,
+                '--verify', sketch.entrypoint
+            ]
 
             this.applyFilters('onBeforeVerify', sketch)
 
-            return adk.arduino(params, function () {
-                adk.applyFilters('onAfterVerify', sketch)
+            return this.arduino(params, (exitCode) => {
+                this.applyFilters('onAfterVerify', sketch)
+                return cb(exitCode)
             });
         }
     },
@@ -161,18 +226,61 @@ module.exports = {
      * @param args
      */
     commandInstall: function (cmd, args, cb) {
-        foreach(this.config.packages, function (package) {
-            console.log(package)
-        });
+        // Adding boards manager
+        let updatePreferences = false;
+        foreach(this.config.packages, function (packageUrl) {
+            if (this.preferences['boardsmanager.additional.urls'].indexOf(packageUrl) === -1) {
+                this.preferences['boardsmanager.additional.urls'].push(packageUrl)
+                updatePreferences = true
+            }
+        })
 
+        // Install includes repository
+        fu.mkdir('includes')
+        foreach(this.config.includes, function (include) {
+            if (!fu.exists('includes/' + include.name)) {
+                exec('cd includes && git clone ' + include.link + ' ' + include.name);
+            }
+        })
 
-        var includes = this.config.includes
+        //
+        if (updatePreferences) {
+            prefs.save(this.preferences)
+        }
 
-        for (var include in includes) {
-            if (includes.hasOwnProperty(include)) {
-                exec('cd includes && git clone ' + includes[include].repository + ' ' + include);
+        //
+        let boards = []
+        foreach(this.config.sketches, (sketch) => {
+            if (boards.indexOf(sketch.board) === -1) {
+                boards.push(sketch.board)
+            }
+        })
+
+        //
+        let libraries = []
+        foreach(this.config.sketches, (sketch) => {
+            foreach(sketch.require, (library) => {
+                if (libraries.indexOf(library) === -1) {
+                    libraries.push(library)
+                }
+            })
+        })
+
+        //
+        let installBoardsLoop = (boards, exitCode) => {
+            if (boards.length > 0) {
+                let board = boards.shift()
+                return this.arduino(['--install-boards', board], (exitCode) => {
+                    return installBoardsLoop(boards, exitCode)
+                })
+            } else if (libraries.length > 0) {
+                return this.arduino(['--install-library', libraries.join(',')], cb)
+            } else {
+                return cb(exitCode)
             }
         }
+
+        return installBoardsLoop(boards)
     },
 
     /**
@@ -181,9 +289,7 @@ module.exports = {
      * @param args
      */
     arduino: function (params, cb) {
-        var arduino = this.config.arduino;
-
-        return this.spawn(arduino, params, function (out) { cb(out) });
+        return this.spawn(this.config.arduino, params, function (out) { cb(out) });
     },
 
     /**
@@ -200,7 +306,8 @@ module.exports = {
 
         // Attach stdout handler
         wrapper.stdout.on('data', function (data) {
-            process.stdout.write(data.toString());
+            let line = data.toString()
+            process.stdout.write(line);
         });
 
         // Attach stderr handler

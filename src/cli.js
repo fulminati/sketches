@@ -39,10 +39,8 @@ module.exports = {
         if (!fu.fileExists(adk.options.configFile)) {
             return cliz.error("Sketches file '" + adk.options.configFile + "' not found", cb)
         }
-
-        adk.registerConfig();
-
-        return adk[adk.commands[cmd]](cmd, args, cb)
+        
+        return adk.run(cmd, args, cb)
     },
 
     /**

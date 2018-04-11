@@ -102,7 +102,7 @@ module.exports = {
      */
     getGroup: function () {
         return exec("id -g -n");
-    },
+    }
 };
 
 
