@@ -39,9 +39,9 @@ module.exports = {
 
         foreach(files, (file) => {
             var code = fu.readFile(file)
-            if (code.match(loadhtml.selector)) {
+            if (code.match(this.selector)) {
                 fu.writeFile(file + '.loadhtml', code)
-                fu.writeFile(file, loadhtml.processSelectors(dirname(file), code))
+                fu.writeFile(file, this.processSelectors(dirname(file), code))
             }
         })
     },
@@ -51,7 +51,6 @@ module.exports = {
      * @param sketch
      */
     processAfter: function (sketch) {
-        var loadhtml = this
         var files = glob.sync('**/*.loadhtml', { cwd: sketch.path, absolute: true })
 
         foreach(files, function(file) {

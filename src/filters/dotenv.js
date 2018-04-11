@@ -68,7 +68,7 @@ module.exports = {
      */
     processSelectors: function (code) {
         return code.replace(this.selector, function (token, variable) {
-            return 'HELLO'
+            return '"' + (process.env[variable] || '') + '"'
         })
     }
 }
