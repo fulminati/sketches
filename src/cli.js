@@ -9,6 +9,10 @@ const fu = require('nodejs-fu')
     , util = require('./util')
     , adk = require('./adk')
 
+cliz.debugTag = '(DEBUG)';
+cliz.errorTag = '(ERROR)';
+cliz.fatalTag = '(ERROR)';
+
 module.exports = {
 
     /**
@@ -33,7 +37,7 @@ module.exports = {
         }
 
         if (!adk.commands.hasOwnProperty(cmd)) {
-            return cliz.error("Undefinend command: '" + cmd + "'", cb)
+            return cliz.error("Unknown command '" + cmd + "'", cb)
         }
 
         if (!fu.fileExists(adk.options.configFile)) {

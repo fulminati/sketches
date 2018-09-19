@@ -5,12 +5,7 @@
  */
 
 const fu = require('nodejs-fu')
-    , cliz = require('cliz')
     , foreach = require('boor').foreach
-    , util = require('./util')
-    , adk = require('./adk')
-
-const file = require('os').homedir() + '/.arduino15/preferences.txt'
 
 module.exports = {
 
@@ -20,7 +15,7 @@ module.exports = {
      * @param {array} args a list of arguments
      * @returns {string}
      */
-    load: function() {
+    load: function(file) {
         data = fu.readFile(file)
         preferences = {}
 

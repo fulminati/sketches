@@ -32,7 +32,16 @@ module.exports = {
         var offset = 11 + key.length;
         var column = process.stdout.columns - offset;
         //msg = this.indent(wrap(column)(msg), offset);
-        console.log(col.yellow.bold("<<info>> "+key+":"), col.white(msg));
+        console.log(col.green.bold("(" + key + ")"), col.white(msg));
+    },
+
+    /**
+     *
+     * @param key
+     * @param msg
+     */
+    title: function (title) {
+        console.log(col.bold(`======= ${title} =======`));
     },
 
     /**
