@@ -1,3 +1,17 @@
+Usage: arduinodk <command> [args...]
+       arduinodk [--help|--version]
 
-verify [sketch]     Verify sketch code
-sketch [sketch]     Create new project sketch
+ init                      init project structure
+ install                   install project dependencies
+ vefify [sketch]           verify sketch settings and source files
+ upload [sketch]           upload sketch to connected board
+ apply-filters [sketch]    apply filters to source files
+ create-sketch [sketch]    add new sketch into project
+ rename-sketch [sketch]    rename sketch into project
+
+ [args...]          optional command arguments (see --help [command])
+
+ --help [command]   show help instructions
+ --version          show installed version
+
+Documentation can be found at https://github.com/fulminati/arduinodk

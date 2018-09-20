@@ -18,7 +18,6 @@ const fu = require('nodejs-fu')
     , renameSketchCommand = require('./command/rename-sketch-command')
     , verifyCommand = require('./command/verify-command')
     , uploadCommand = require('./command/upload-command')
-    , util = require('./util')
 
 module.exports = {
 
@@ -142,7 +141,7 @@ module.exports = {
     },
 
     /**
-     * Retrieve get into cli arguments.
+     * Retrieve sketch into cli arguments.
      */
     getSketch: function (args) {
         let sketch = cliz.command(args)
