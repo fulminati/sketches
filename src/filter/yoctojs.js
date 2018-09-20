@@ -1,3 +1,8 @@
+/*!
+ * arduinodk
+ * Copyright(c) 2016-2017 Javanile.org
+ * MIT Licensed
+ */
 
 const fu = require('nodejs-fu')
     , glob = require('glob')

@@ -29,7 +29,7 @@ module.exports = {
     },
 
     /**
-     *
+     * Install script.
      */
     processInstall: function (adk, cmd, args, cb) {
         // Adding boards manager
@@ -73,16 +73,21 @@ module.exports = {
         })
 
         //
-        let installBoardsLoop = (boards, info) => {
+        let installBoardsLoop = (info) => {
             if (boards.length > 0) {
                 let board = boards.shift()
                 util.title(`Install board '${board}' from internet`);
                 return adk.arduino(['--install-boards', board], (info) => {
                     this.handleInstallBoardExitCode(info)
-                    return installBoardsLoop(boards, info)
+                    return installBoardsLoop(info)
                 })
             } else if (libraries.length > 0) {
-                return adk.arduino(['--install-library', libraries.join(',')], cb)
+                let library = libraries.shift()
+                util.title(`Install library '${library}' from internet`);
+                return adk.arduino(['--install-library', library], (info) => {
+                    this.handleInstallLibrariesExitCode(info);
+                    return installBoardsLoop(info)
+                });
             } else {
                 return cb(info)
             }
@@ -92,15 +97,29 @@ module.exports = {
     },
 
     /**
+     * Handle exit code of board installation.
      *
      * @param info
      */
     handleInstallBoardExitCode: function (info) {
-        if (info.exitCode == 255) {
-            cliz.debug('Board is already installed.')
-        } else {
-            cliz.fatal(info.lastLine)
+        //console.log(info.exitCode);
+        switch (info.exitCode) {
+            case 0: cliz.debug(info.lastLine); break;
+            case 255: cliz.debug('Board is already installed.'); break;
+            default: cliz.fatal(info.lastLine);
+        }
+    },
+
+    /**
+     * Handle exit code of library installation.
+     *
+     * @param info
+     */
+    handleInstallLibrariesExitCode: function (info) {
+        //console.log(info.exitCode);
+        switch (info.exitCode) {
+            case 0: cliz.debug(info.lastLine); break;
+            default: cliz.fatal(info.lastLine);
         }
     }
-
 };

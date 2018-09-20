@@ -41,7 +41,7 @@ module.exports = {
      * @param msg
      */
     title: function (title) {
-        console.log(col.bold(`======= ${title} =======`));
+        console.log(col.bold(`\n======= ${title} =======`));
     },
 
     /**

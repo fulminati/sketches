@@ -38,17 +38,17 @@ module.exports = {
     },
 
     /**
-     *
+     * Apply filters attached to specific sketch by event.
      */
-    applyFilters: function (event, sketch) {
+    applyFilters: function (adk, event, sketch) {
         var filters = sketch.filters;
 
         for (var i in filters) {
             if (filters.hasOwnProperty(i)) {
                 var filter = filters[i]
-                if (this.filters.hasOwnProperty(filter)) {
-                    if (typeof this.filters[filter][event] === 'function') {
-                        this.filters[filter][event](sketch)
+                if (adk.filters.hasOwnProperty(filter)) {
+                    if (typeof adk.filters[filter][event] === 'function') {
+                        adk.filters[filter][event](sketch)
                     }
                 }
             }

@@ -14,7 +14,7 @@ module.exports = {
      *
      * @param cb
      */
-    load: function (cb) {
+    load: function (adk, cb) {
         let url = 'https://raw.githubusercontent.com/fulminati/arduinodk-index/master/arduinodk-index.json';
         https.get(url, (resp) => {
             let rawData = '';
@@ -22,7 +22,7 @@ module.exports = {
             resp.on('end', () => {
                 try {
                     const parsedData = JSON.parse(rawData);
-                    console.log(parsedData);
+                    //console.log(parsedData);
                     cb()
                 } catch (e) {
                     console.error(e.message);

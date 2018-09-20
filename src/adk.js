@@ -7,16 +7,14 @@
 const fu = require('nodejs-fu')
     , cliz = require('cliz')
     , join = require('path').join
-    , spawn = require('child_process').spawn
-    , exec = require('child_process').execSync
     , homedir = require('os').homedir()
-    , user = require('username')
-    , base = require('path').basename
     , foreach = require('boor').foreach
     , systemApi = require('./api/system-api')
-    , preferencesApi = require('./api/preferences-api')
     , filtersApi = require('./api/filters-api')
+    , preferencesApi = require('./api/preferences-api')
     , installCommand = require('./command/install-command')
+    , applyVerifyFiltersCommand = require('./command/apply-verify-filters-command')
+    , verifyCommand = require('./command/verify-command')
     , util = require('./util')
 
 module.exports = {
@@ -43,9 +41,10 @@ module.exports = {
      * Available commands.
      */
     commands: {
-        sketch: 'commandSketch',
-        verify: 'commandVerify',
-        install: installCommand
+        'sketch': 'commandSketch',
+        'verify': verifyCommand,
+        'install': installCommand,
+        'apply-verify-filters': applyVerifyFiltersCommand
     },
 
     /**
@@ -140,8 +139,29 @@ module.exports = {
     /**
      *
      */
+    getSketch: function (args) {
+        let sketch = cliz.command(args)
+        return this.configData.sketches[sketch]
+    },
+
+    /**
+     * Retrive and assert as fatal a sketch name inside args.
+     */
     requireSketch: function (cmd, args, cb) {
         let sketch = cliz.command(args)
+
+        if (!sketch) {
+            let sketches = Object.keys(this.configData.sketches);
+            if (sketches.length > 1) {
+                cliz.fatal(`Syntax error '${cmd}' require valid sketch`);
+            }
+            sketch = sketches[0];
+        }
+
+        if (!this.configData.sketches.hasOwnProperty(sketch)) {
+            cliz.fatal(`The '${sketch}' sketch not found in '${this.options.configFile}'.`)
+        }
+
         return this.configData.sketches[sketch]
     },
 
@@ -151,6 +171,6 @@ module.exports = {
      * @param args
      */
     arduino: function (params, cb) {
-        return systemApi.spawn(this.configData.arduino, params, (out) => { cb(out) })
+        return systemApi.spawn(this.configData.arduino, params, (info) => { cb(info) })
     }
 };
