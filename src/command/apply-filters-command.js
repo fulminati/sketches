@@ -16,12 +16,17 @@ module.exports = {
      * @param args
      */
     run: function (adk, cmd, args, cb) {
-        let sketch = adk.requireSketch(cmd, args, cb);
+        let sketch = adk.requireSketch(cmd, args, cb)
+        let inspect = cliz.option(args, '--inspect')
 
         console.log(`ArduinoDK apply verify filters on '${adk.configData.name}' project...`)
 
-        filtersApi.applyFilters(adk, 'onBeforeVerify', sketch, true);
+        filtersApi.applyFilters(adk, 'onBefore', 'apply-filters', sketch)
 
-        return
+        if (!inspect) {
+            filtersApi.applyFilters(adk, 'onAfter', 'apply-filters', sketch)
+        }
+
+        return cb()
     },
 };

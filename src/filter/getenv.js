@@ -18,7 +18,7 @@ module.exports = {
      *
      * @param sketch
      */
-    onBeforeVerify: function (sketch) {
+    onBefore: function (sketch) {
         filter.onBefore(sketch, this.filter, this.processor)
     },
 
@@ -28,7 +28,7 @@ module.exports = {
      * @param sketch
      * @returns {*}
      */
-    onAfterVerify: function (sketch) {
+    onAfter: function (sketch) {
         filter.onAfter(sketch, this.filter)
     },
 
@@ -39,8 +39,7 @@ module.exports = {
      * @param code
      * @returns {string | void}
      */
-    processor: function (variable) {
-        console.log('PE', arguments);
-        return '"' + (process.env[variable] || '') + '"'
+    processor: function (args) {
+        return '"' + (process.env[args[0]] || '') + '"'
     }
 };

@@ -13,8 +13,11 @@ const fu = require('nodejs-fu')
     , filtersApi = require('./api/filters-api')
     , preferencesApi = require('./api/preferences-api')
     , installCommand = require('./command/install-command')
-    , applyVerifyFiltersCommand = require('./command/apply-verify-filters-command')
+    , applyFiltersCommand = require('./command/apply-filters-command')
+    , createSketchCommand = require('./command/create-sketch-command')
+    , renameSketchCommand = require('./command/rename-sketch-command')
     , verifyCommand = require('./command/verify-command')
+    , uploadCommand = require('./command/upload-command')
     , util = require('./util')
 
 module.exports = {
@@ -31,7 +34,7 @@ module.exports = {
      * Config data provided by sketches.yml file.
      */
     configData: {
-        version: 1,
+        version: '0.0.0',
         sketches: {},
         includes: {},
         packages: []
@@ -41,10 +44,12 @@ module.exports = {
      * Available commands.
      */
     commands: {
-        'sketch': 'commandSketch',
         'verify': verifyCommand,
+        'upload': uploadCommand,
         'install': installCommand,
-        'apply-verify-filters': applyVerifyFiltersCommand
+        'rename-sketch': renameSketchCommand,
+        'create-sketch': createSketchCommand,
+        'apply-filters': applyFiltersCommand
     },
 
     /**
@@ -60,7 +65,7 @@ module.exports = {
     /**
      * Loaded environments variables.
      */
-    env: {},
+    environment: {},
 
     /**
      * Run adk command.
@@ -137,7 +142,7 @@ module.exports = {
     },
 
     /**
-     *
+     * Retrieve get into cli arguments.
      */
     getSketch: function (args) {
         let sketch = cliz.command(args)
