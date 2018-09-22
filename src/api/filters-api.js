@@ -40,7 +40,8 @@ module.exports = {
     /**
      * Apply filters attached to specific sketch by event.
      */
-    applyFilters: function (adk, event, sketch) {
+    applyFilters: function (adk, event, cmd, sketch) {
+        console.log('apply filter', event)
         var filters = sketch.filters;
 
         for (var i in filters) {
