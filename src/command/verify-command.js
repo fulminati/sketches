@@ -5,6 +5,7 @@
  */
 
 const cliz = require('cliz')
+    , join = require('path').join
     , filtersApi = require('../api/filters-api')
     , util = require('../util')
 
@@ -50,7 +51,7 @@ module.exports = {
         var params = [
             '--board', sketch.board,
             '--verify', sketch.entrypoint,
-            '--pref', 'build.path='+sketch.build
+            '--pref', 'build.path=' + join(sketch.build, 'verify')
         ]
 
         filtersApi.applyFilters(adk, 'onBefore', 'verify', sketch)

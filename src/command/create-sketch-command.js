@@ -4,7 +4,9 @@
  * MIT Licensed
  */
 
-const cliz = require('cliz')
+const fu = require('nodejs-fu')
+    , cliz = require('cliz')
+    , join = require('path').join
     , filtersApi = require('../api/filters-api')
     , util = require('../util')
 
@@ -16,59 +18,30 @@ module.exports = {
      * @param args
      */
     run: function (adk, cmd, args, cb) {
-        console.log(`ArduinoDK verifing '${adk.configData.name}' project...`)
-
-        let sketch = adk.getSketch(args)
-
-        if (sketch) {
-            return this.verifySketch(adk, sketch, cb);
+        let sketch = cliz.command(args)
+        if (!sketch) {
+            cliz.fatal(`Missing sketch name. Try 'arduinodk --help create-sketch'.`)
         }
 
-        let sketches = Object.keys(adk.configData.sketches);
+        console.log(`ArduinoDK create sketch on '${adk.configData.name}' project...`)
 
-        let verifySketchLoop = (index) => {
-            if (index < sketches.length) {
-                this.verifySketch(adk, adk.configData.sketches[sketches[index]], (info) => {
-                    this.handleVerifyExitCode(info);
-                    verifySketchLoop(index+1);
-                });
+        let projectPath = adk.options.cwd
+
+        util.title(`Create '${sketch}' sketch`)
+        fu.mkdir(join(projectPath, 'sketches', sketch))
+        util.createFile(join(projectPath, 'sketches', sketch, sketch + '.ino'), 'sketch.tpl.ino', sketch)
+        util.createFile(join(projectPath, 'sketches', sketch, sketch + '.h'), 'sketch.tpl.h', sketch)
+        util.createFile(join(projectPath, 'filters', sketch + '.js'), 'filter.tpl.js', sketch)
+
+        cliz.debug(`Update '${adk.options.configFile}' file`)
+        let configData = cliz.configRaw(adk.options.configFile)
+        if (!configData.sketches.hasOwnProperty(sketch)) {
+            configData.sketches[sketch] = {
+                board: 'uno',
             }
-        };
-
-        return verifySketchLoop(0);
-    },
-
-    /**
-     *
-     * @param adk
-     * @param sketch
-     * @returns {*}
-     */
-    verifySketch: function (adk, sketch, cb) {
-        util.title(`Verify '${sketch.name}' sketch`);
-
-        var params = [
-            '--board', sketch.board,
-            '--verify', sketch.entrypoint
-        ]
-
-        filtersApi.applyFilters(adk, 'onBefore', 'create-sketch', sketch)
-
-        return adk.arduino(params, (info) => {
-            filtersApi.applyFilters(adk, 'onAfter', 'create-sketch', sketch)
-            return cb(info)
-        });
-    },
-
-    /**
-     *
-     * @param info
-     */
-    handleVerifyExitCode: function (info) {
-        //console.log(info.exitCode);
-        switch (info.exitCode) {
-            case 0: cliz.debug(info.lastLine); break;
-            default: cliz.fatal(info.lastLine);
+            cliz.configSave(adk.options.configFile, configData)
         }
+
+        cliz.debug(`Done.`)
     }
 };

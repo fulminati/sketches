@@ -4,12 +4,14 @@
  * MIT Licensed
  */
 
-var fs = require("fs");
-var join = require("path").join;
-var spawn = require("child_process").spawn;
-var exec = require("child_process").execSync;
-var user = require("username");
-var col = require("colors");
+const fu = require('nodejs-fu')
+    , cliz = require('cliz')
+    , join = require('path').join
+    , basename = require('path').basename
+    , spawn = require('child_process').spawn
+    , exec = require('child_process').execSync
+    , user = require('username')
+    , col = require('colors')
 
 module.exports = {
 
@@ -19,7 +21,7 @@ module.exports = {
      * @param msg
      */
     log: function (msg, tokens) {
-        return this.indent("(ndev)  ", this.applyTokens(msg, tokens));
+        return this.indent('(ndev)  ', this.applyTokens(msg, tokens));
     },
 
 
@@ -47,7 +49,7 @@ module.exports = {
      * @param key
      */
     isEnabled: function (opts, key) {
-        return typeof opts[key] != "undefined" && opts[key]
+        return typeof opts[key] != 'undefined' && opts[key]
     },
 
     /**
@@ -57,7 +59,7 @@ module.exports = {
     applyTokens: function (msg, tokens) {
         for (token in tokens) {
             if (tokens.hasOwnProperty(token)) {
-                msg = msg.replace("${"+token+"}", tokens[token]);
+                msg = msg.replace('${'+token+'}', tokens[token]);
             }
         }
         return msg;
@@ -67,15 +69,15 @@ module.exports = {
      *
      */
     indent: function (msg, offset) {
-        return msg.split("\n").join("\n" + this.pad(offset));
+        return msg.split('\n').join('\n' + this.pad(offset));
     },
 
     /**
      *
      */
     pad: function (len) {
-        var str = "";
-        for (var i = 0; i < len; i++) { str += " "; }
+        var str = '';
+        for (var i = 0; i < len; i++) { str += ' '; }
         return str;
     },
 
@@ -107,7 +109,29 @@ module.exports = {
      *
      */
     getGroup: function () {
-        return exec("id -g -n");
+        return exec('id -g -n');
+    },
+
+    /**
+     * Create file by tempalte.
+     *
+     * @param file
+     * @param tpl
+     * @param project
+     */
+    createFile: function (file, tpl, project, append) {
+        if (!append && fu.fileExists(file)) { return; }
+        let code = fu.readFile(join(__dirname, '../tpl/', tpl))
+            .replace(/\{\{SKETCH_NAME\}\}/g, project)
+            .replace(/\{\{SKETCH_PREFIX\}\}/g, project.toUpperCase())
+            .replace(/\{\{FILE_NAME\}\}/g, basename(file))
+        if (!append) {
+            cliz.debug(`Create file '${file}'`)
+            fu.writeFile(file, code)
+        } else {
+            cliz.debug(`Update file '${file}'`)
+            fu.appendFile(file, code)
+        }
     }
 };
 

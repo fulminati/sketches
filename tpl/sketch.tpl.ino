@@ -1,6 +1,6 @@
 /*
- Sketch: {{SKETCH_NAME}}
-   File: {{FILE_NAME}}
+ File: {{FILE_NAME}}
+ <write description here>
 
  ArduinoDK
  https://git.io/fAF8y

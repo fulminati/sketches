@@ -42,31 +42,11 @@ module.exports = {
         fu.mkdir(join(projectPath, 'sketches', project))
 
         util.info('Generate project files')
-        this.createFile(join(projectPath, 'sketches', project, project + '.ino'), 'sketch.tpl.ino', project)
-        this.createFile(join(projectPath, 'sketches', project, project + '.h'), 'sketch.tpl.h', project)
-        this.createFile(join(projectPath, 'filters', project + '.js'), 'filter.tpl.js', project)
-        this.createFile(join(projectPath, '.gitignore'), '.gitignore.tpl', project, true)
+        util.createFile(join(projectPath, 'sketches', project, project + '.ino'), 'sketch.tpl.ino', project)
+        util.createFile(join(projectPath, 'sketches', project, project + '.h'), 'sketch.tpl.h', project)
+        util.createFile(join(projectPath, 'filters', project + '.js'), 'filter.tpl.js', project)
+        util.createFile(join(projectPath, '.gitignore'), '.gitignore.tpl', project, true)
 
         console.log('Process done.')
-    },
-
-    /**
-     * Create file by tempalte.
-     *
-     * @param file
-     * @param tpl
-     * @param project
-     */
-    createFile: function (file, tpl, project, append) {
-        if (!append && fu.fileExists(file)) { return; }
-        let code = fu.readFile(join(__dirname, '../../tpl/', tpl))
-            .replace(/\{\{SKETCH_NAME\}\}/g, project)
-            .replace(/\{\{SKETCH_PREFIX\}\}/g, project.toUpperCase())
-            .replace(/\{\{FILE_NAME\}\}/g, basename(file))
-        if (!append) {
-            fu.writeFile(file, code)
-        } else {
-            fu.appendFile(file, code)
-        }
     }
 };

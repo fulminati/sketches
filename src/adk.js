@@ -12,6 +12,7 @@ const fu = require('nodejs-fu')
     , systemApi = require('./api/system-api')
     , filtersApi = require('./api/filters-api')
     , preferencesApi = require('./api/preferences-api')
+    , lsCommand = require('./command/ls-command')
     , initCommand = require('./command/init-command')
     , installCommand = require('./command/install-command')
     , monitorCommand = require('./command/monitor-command')
@@ -47,6 +48,7 @@ module.exports = {
      * Available commands.
      */
     commands: {
+        'ls': lsCommand,
         'init': initCommand,
         'verify': verifyCommand,
         'upload': uploadCommand,
@@ -163,7 +165,11 @@ module.exports = {
      * Retrive and assert as fatal a sketch name inside args.
      */
     requireSketch: function (cmd, args, cb) {
+        console.log(cmd, args)
+
         let sketch = cliz.command(args)
+
+        console.log(sketch)
 
         if (!sketch) {
             let sketches = Object.keys(this.configData.sketches);
