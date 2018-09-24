@@ -15,6 +15,7 @@ const fu = require('nodejs-fu')
     , initCommand = require('./command/init-command')
     , installCommand = require('./command/install-command')
     , monitorCommand = require('./command/monitor-command')
+    , sandboxCommand = require('./command/sandbox-command')
     , applyFiltersCommand = require('./command/apply-filters-command')
     , createSketchCommand = require('./command/create-sketch-command')
     , renameSketchCommand = require('./command/rename-sketch-command')
@@ -51,6 +52,7 @@ module.exports = {
         'upload': uploadCommand,
         'install': installCommand,
         'monitor': monitorCommand,
+        'sandbox': sandboxCommand,
         'rename-sketch': renameSketchCommand,
         'create-sketch': createSketchCommand,
         'apply-filters': applyFiltersCommand
@@ -136,14 +138,17 @@ module.exports = {
     /**
      * Init single sketch.
      */
-    initSketch: function (sketch) {
-        var name = sketch
+    initSketch: function (name) {
+        let sketch = this.configData.sketches[name];
 
-        this.configData.sketches[sketch]['entrypoint'] = 'sketches/' + name + '/' + name + '.ino'
-        this.configData.sketches[sketch]['path'] = process.cwd() + '/sketches/' + name
-        this.configData.sketches[sketch]['name'] = name
-        this.configData.sketches[sketch]['filters'] = filtersApi.initFilters(this, sketch)
-        this.configData.sketches[sketch]['build'] = process.cwd() + '/build/' + name
+        sketch['entrypoint'] = 'sketches/' + name + '/' + name + '.ino'
+        sketch['path'] = this.options.cwd + '/sketches/' + name
+        sketch['name'] = name
+        sketch['filters'] = filtersApi.initFilters(this, name)
+        sketch['build'] = this.options.cwd + '/build/' + name
+        sketch['sandbox'] = this.options.cwd + '/sketches/' + name + '/_sandbox.js'
+
+        this.configData.sketches[name] = sketch
     },
 
     /**
