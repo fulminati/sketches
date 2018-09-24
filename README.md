@@ -52,6 +52,7 @@ $ arduinodk upload
 ## References
  - https://github.com/arduino/Arduino/blob/ide-1.5.x/build/shared/manpage.adoc
  - https://h3ron.com/post/programmare-lesp8266-ovvero-arduino-con-il-wifi-a-meno-di-2/
+ - https://cassiopeia.hk/rgb-wifi/
  - https://www.anginf.de/?p=600
  
  
