@@ -12,7 +12,9 @@ const fu = require('nodejs-fu')
     , systemApi = require('./api/system-api')
     , filtersApi = require('./api/filters-api')
     , preferencesApi = require('./api/preferences-api')
+    , initCommand = require('./command/init-command')
     , installCommand = require('./command/install-command')
+    , monitorCommand = require('./command/monitor-command')
     , applyFiltersCommand = require('./command/apply-filters-command')
     , createSketchCommand = require('./command/create-sketch-command')
     , renameSketchCommand = require('./command/rename-sketch-command')
@@ -25,6 +27,7 @@ module.exports = {
      * Runtime options.
      */
     options: {
+        cwd: process.cwd(),
         info: false,
         configFile: 'sketches.yml'
     },
@@ -43,9 +46,11 @@ module.exports = {
      * Available commands.
      */
     commands: {
+        'init': initCommand,
         'verify': verifyCommand,
         'upload': uploadCommand,
         'install': installCommand,
+        'monitor': monitorCommand,
         'rename-sketch': renameSketchCommand,
         'create-sketch': createSketchCommand,
         'apply-filters': applyFiltersCommand
@@ -138,6 +143,7 @@ module.exports = {
         this.configData.sketches[sketch]['path'] = process.cwd() + '/sketches/' + name
         this.configData.sketches[sketch]['name'] = name
         this.configData.sketches[sketch]['filters'] = filtersApi.initFilters(this, sketch)
+        this.configData.sketches[sketch]['build'] = process.cwd() + '/build/' + name
     },
 
     /**

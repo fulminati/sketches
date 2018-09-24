@@ -1,7 +1,9 @@
-/*!
- * arduinodk
- * Copyright(c) 2016-2017 Javanile.org
- * MIT Licensed
+/*
+ Filter: {{SKETCH_NAME}}
+   File: {{FILE_NAME}}
+
+ ArduinoDK
+ https://git.io/fAF8y
  */
 
 const filter = require('arduinodk-filter')
@@ -9,16 +11,16 @@ const filter = require('arduinodk-filter')
 module.exports = {
 
     /**
-     * Define GetEnv filter token @getenv(...).
+     * Define custom filter token @myFilter(...).
      */
-    filter: 'getenv',
+    filter: 'myFilter',
 
     /**
      * Process before verify.
      *
      * @param sketch
      */
-    onBefore: function (sketch) {
+    onBeforeVerify: function (sketch) {
         filter.onBefore(sketch, this.filter, this.processor)
     },
 
@@ -28,7 +30,7 @@ module.exports = {
      * @param sketch
      * @returns {*}
      */
-    onAfter: function (sketch) {
+    onAfterVerify: function (sketch) {
         filter.onAfter(sketch, this.filter)
     },
 
@@ -39,8 +41,7 @@ module.exports = {
      * @param code
      * @returns {string | void}
      */
-    processor: function (args) {
-        console.log('args', args);
-        return '"' + (process.env[args[0]] || '') + '"'
+    processor: function (variable) {
+        return filter.quote(variable.toUpperCase())
     }
 };

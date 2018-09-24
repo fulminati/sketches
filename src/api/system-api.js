@@ -9,6 +9,7 @@ const fu = require('nodejs-fu')
     , spawn = require('child_process').spawn
     , EOL = require('os').EOL
     , util = require('../util')
+    , isRoot = require('is-root')
 
 module.exports = {
 
@@ -61,5 +62,31 @@ module.exports = {
         });
 
         return raw;
+    },
+
+    /**
+     *
+     */
+    requireDialout: function (cmd, args) {
+        console.log(`Detected platform '${process.platform}'`)
+        switch (process.platform) {
+            case 'linux':
+                if (isRoot()) { return; }
+                console.log(
+                    `The command '${cmd}' require 'dialout' privileges\nplease use one of the follow solutions:\n\n`+
+                    `    1. Execute as root with 'sudo arduinodk ${cmd} ${args.join(' ')}'\n`+
+                    `    2. add your user on dialout group\n`
+                )
+                break;
+            case 'aix':
+            case 'darwin':
+            case 'freebsd':
+            case 'openbsd':
+            case 'sunos':
+            case 'win32':
+                console.log("Contact for problem: bianco@javanile.org");
+                break;
+        }
+        process.exit()
     }
 };

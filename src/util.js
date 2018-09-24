@@ -28,11 +28,8 @@ module.exports = {
      * @param key
      * @param msg
      */
-    info: function (key, msg) {
-        var offset = 11 + key.length;
-        var column = process.stdout.columns - offset;
-        //msg = this.indent(wrap(column)(msg), offset);
-        console.log(col.green.bold("(" + key + ")"), col.white(msg));
+    info: function (info) {
+        console.log('   --->', info);
     },
 
     /**

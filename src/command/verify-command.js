@@ -49,13 +49,14 @@ module.exports = {
 
         var params = [
             '--board', sketch.board,
-            '--verify', sketch.entrypoint
+            '--verify', sketch.entrypoint,
+            '--pref', 'build.path='+sketch.build
         ]
 
-        filtersApi.applyFilters(adk, 'onBefore', sketch)
+        filtersApi.applyFilters(adk, 'onBefore', 'verify', sketch)
 
         return adk.arduino(params, (info) => {
-            filtersApi.applyFilters(adk, 'onAfterVerify', sketch)
+            filtersApi.applyFilters(adk, 'onAfter', 'verify', sketch)
             return cb(info)
         });
     },

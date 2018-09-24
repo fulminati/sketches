@@ -52,10 +52,10 @@ module.exports = {
             '--verify', sketch.entrypoint
         ]
 
-        filtersApi.applyFilters(adk, 'onBefore', sketch)
+        filtersApi.applyFilters(adk, 'onBefore', 'create-sketch', sketch)
 
         return adk.arduino(params, (info) => {
-            filtersApi.applyFilters(adk, 'onAfterVerify', sketch)
+            filtersApi.applyFilters(adk, 'onAfter', 'create-sketch', sketch)
             return cb(info)
         });
     },
