@@ -46,10 +46,20 @@ $ arduinodk upload
 ```
 
 ## Roadmap
-+------+------+
-| Command | Progress |
 
-
+| Command       | Progress | Features |
+|---------------|:--------:|----------|
+| apply-filters | 10%      |          |
+| create-sketch | 10%      |          |
+| flash         | 10%      |          |
+| init          | 10%      |          |
+| install       | 10%      |          |
+| ls            | 10%      |          |
+| monitor       | 10%      |          |
+| rename-sketch | 10%      |          |
+| sandbox       | 10%      |          |
+| upload        | 10%      |          |
+| verify        | 10%      |          |
 
 ## Read more
 
