@@ -14,16 +14,16 @@ const cliz = require('cliz')
 module.exports = {
 
     /**
-     * Verify sketches codebase.
+     * Start monitor a specific port.
      *
-     * @param args
+     * @param adk
+     * @param sketch
+     * @returns {*}
      */
-    run: function (adk, cmd, args, cb) {
-        systemApi.requireDialout(cmd, args, cb);
+    parse: function (adk, sketch, input) {
+        input = input.replace(/\$\[file\]/gm, sketch.firmware.file)
+        input = input.replace(/\$\[port\]/gm, sketch.port)
 
-        console.log(`ArduinoDK monitoring '${adk.configData.name}' project...`)
-        let sketch = adk.requireSketch(cmd, args, cb)
-
-        monitorApi.monitor(adk, sketch, cb);
-    },
+        return input
+    }
 };

@@ -21,7 +21,7 @@ module.exports = {
      * @param sketch
      */
     onBeforeVerify: function (sketch) {
-        filter.onBefore(sketch, this.filter, this.processor)
+        return filter.onBefore(sketch, this.filter, this.processor)
     },
 
     /**
@@ -31,7 +31,7 @@ module.exports = {
      * @returns {*}
      */
     onAfterVerify: function (sketch) {
-        filter.onAfter(sketch, this.filter)
+        return filter.onAfter(sketch, this.filter)
     },
 
     /**
@@ -41,7 +41,7 @@ module.exports = {
      * @param code
      * @returns {string | void}
      */
-    processor: function (variable) {
-        return filter.quote(variable.toUpperCase())
+    processor: function (file, args) {
+        return filter.quote(args[0].toUpperCase())
     }
 };

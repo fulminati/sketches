@@ -7,6 +7,7 @@
 const cliz = require('cliz')
     , join = require('path').join
     , filtersApi = require('../api/filters-api')
+    , monitorApi = require('../api/monitor-api')
     , util = require('../util')
 
 module.exports = {
@@ -31,7 +32,7 @@ module.exports = {
      * @returns {*}
      */
     uploadSketch: function (adk, sketch, cb) {
-        util.title(`Upload '${sketch}' sketch`)
+        util.title(`Upload '${sketch.name}' sketch`)
 
         var params = [
             '--board', sketch.board,
@@ -39,12 +40,25 @@ module.exports = {
             '--pref', 'build.path=' + join(sketch.build, 'upload')
         ]
 
-        filtersApi.applyFilters(adk, 'onBefore', 'verify', sketch)
+        filtersApi.applyFilters(adk, 'onBefore', 'upload', sketch)
 
         return adk.arduino(params, (info) => {
-            filtersApi.applyFilters(adk, 'onAfter', 'verify', sketch)
-            return cb(info)
+            filtersApi.applyFilters(adk, 'onAfter', 'upload', sketch)
+            this.handleUploadExitCode(info);
+            return monitorApi.monitor(adk, sketch, cb)
         });
     },
 
+    /**
+     *
+     * @param info
+     */
+    handleUploadExitCode: function (info) {
+        console.log(info.exitCode);
+        switch (info.exitCode) {
+            case 0: cliz.debug(info.lastLine); break;
+            case 1: cliz.fatal(`Upload failed.`, info.exitCode); break;
+            default: cliz.fatal(info.lastLine, info.exitCode);
+        }
+    }
 };

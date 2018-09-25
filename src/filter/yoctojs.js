@@ -16,13 +16,13 @@ module.exports = {
     /**
      *
      */
-    selector: filter.selector('yoctojs'),
+    filter: 'yoctojs',
 
     /**
      *
      * @param sketch
      */
-    onBeforeVerify: function (sketch) {
+    onBefore: function (sketch) {
         return this.processBefore(sketch)
     },
 
@@ -71,7 +71,7 @@ module.exports = {
      * @param code
      * @returns {string | void}
      */
-    processSelectors: function (path, code) {
+    processor: function (file, args) {
         return code.replace(this.selector, function (token, file) {
             return '""'
         })

@@ -19,7 +19,7 @@ module.exports = {
      * @param sketch
      */
     onBefore: function (sketch) {
-        filter.onBefore(sketch, this.filter, this.processor)
+        return filter.onBefore(sketch, this.filter, this.processor)
     },
 
     /**
@@ -29,7 +29,7 @@ module.exports = {
      * @returns {*}
      */
     onAfter: function (sketch) {
-        filter.onAfter(sketch, this.filter)
+        return filter.onAfter(sketch, this.filter)
     },
 
     /**

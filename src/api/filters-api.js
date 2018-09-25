@@ -15,9 +15,7 @@ module.exports = {
      * @param adk
      * @param sketch
      */
-    initFilters: function (adk, sketch) {
-        var filters = adk.configData.sketches[sketch]['filters'] || []
-
+    initFilters: function (adk, sketch, filters) {
         for (var i in filters) {
             if (filters.hasOwnProperty(i)) {
                 var filter = filters[i];

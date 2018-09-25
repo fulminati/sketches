@@ -19,11 +19,13 @@
     },
     "dependencies": {
         "colors": "^1.1.2",
+        "deepmerge": "^2.1.1",
         "glob": "^7.1.2",
         "html-minifier": "^3.5.13",
         "is-root": "^2.0.0",
         "nodemon": "^1.18.4",
         "serialport": "^7.0.2",
+        "string-argv": "^0.1.1",
         "username": "^3.0.0"
     },
     "devDependencies": {

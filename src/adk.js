@@ -9,11 +9,13 @@ const fu = require('nodejs-fu')
     , join = require('path').join
     , homedir = require('os').homedir()
     , foreach = require('boor').foreach
+    , merge = require('deepmerge')
     , systemApi = require('./api/system-api')
     , filtersApi = require('./api/filters-api')
     , preferencesApi = require('./api/preferences-api')
     , lsCommand = require('./command/ls-command')
     , initCommand = require('./command/init-command')
+    , flashCommand = require('./command/flash-command')
     , installCommand = require('./command/install-command')
     , monitorCommand = require('./command/monitor-command')
     , sandboxCommand = require('./command/sandbox-command')
@@ -50,6 +52,7 @@ module.exports = {
     commands: {
         'ls': lsCommand,
         'init': initCommand,
+        'flash': flashCommand,
         'verify': verifyCommand,
         'upload': uploadCommand,
         'install': installCommand,
@@ -143,14 +146,35 @@ module.exports = {
     initSketch: function (name) {
         let sketch = this.configData.sketches[name];
 
+        if (sketch.extends) {
+            if (sketch.extends == name) {
+                cliz.fatal(`The sketch '${name}' can not extends itself.`)
+            }
+
+            if (!this.configData.sketches.hasOwnProperty(sketch.extends)) {
+                cliz.fatal(`The sketch '${name}' can not extends a not defined '${sketch.extends}' sketch.`)
+            }
+
+            sketch = merge(this.configData.sketches[sketch.extends], sketch)
+
+            delete sketch.extends
+        }
+
         sketch['entrypoint'] = 'sketches/' + name + '/' + name + '.ino'
         sketch['path'] = this.options.cwd + '/sketches/' + name
         sketch['name'] = name
-        sketch['filters'] = filtersApi.initFilters(this, name)
+        sketch['filters'] = filtersApi.initFilters(this, name, sketch['filters'] || [])
         sketch['build'] = this.options.cwd + '/build/' + name
         sketch['sandbox'] = this.options.cwd + '/sketches/' + name + '/_sandbox.js'
 
+        if (sketch.hasOwnProperty('firmware') && sketch['firmware'].hasOwnProperty('file')) {
+            sketch['firmware']['path'] = this.options.cwd + '/build/' + name + '/flash'
+        }
+
         this.configData.sketches[name] = sketch
+
+        //console.log(sketch)
+        //process.exit();
     },
 
     /**
@@ -165,11 +189,7 @@ module.exports = {
      * Retrive and assert as fatal a sketch name inside args.
      */
     requireSketch: function (cmd, args, cb) {
-        console.log(cmd, args)
-
         let sketch = cliz.command(args)
-
-        console.log(sketch)
 
         if (!sketch) {
             let sketches = Object.keys(this.configData.sketches);
@@ -192,6 +212,6 @@ module.exports = {
      * @param args
      */
     arduino: function (params, cb) {
-        return systemApi.spawn(this.configData.arduino, params, (info) => { cb(info) })
+        return systemApi.spawn(this.configData.arduino, params, this.options.cwd, (info) => { cb(info) })
     }
 };

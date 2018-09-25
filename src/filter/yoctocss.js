@@ -4,14 +4,19 @@
  * MIT Licensed
  */
 
-const filter = require('arduinodk-filter')
+const fu = require('nodejs-fu')
+    , glob = require('glob')
+    , minify = require('html-minifier').minify
+    , dirname = require('path').dirname
+    , foreach = require('boor').foreach
+    , filter = require('arduinodk-filter')
 
 module.exports = {
 
     /**
      *
      */
-    filter: 'loadcss',
+    filter: 'yoctocss',
 
     /**
      *
@@ -31,10 +36,11 @@ module.exports = {
     },
 
     /**
+     * Process filter token by file and arguments.
      *
-     * @param path
-     * @param code
-     * @returns {string | void}
+     * @param file
+     * @param args
+     * @returns {string}
      */
     processor: function (file, args) {
         return '""'

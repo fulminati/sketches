@@ -7,6 +7,7 @@
 const fu = require('nodejs-fu')
     , cliz = require('cliz')
     , spawn = require('child_process').spawn
+    , https = require('https')
     , EOL = require('os').EOL
     , util = require('../util')
     , isRoot = require('is-root')
@@ -16,14 +17,14 @@ module.exports = {
     /**
      * Exec command with spawn.
      */
-    spawn: function (cmd, params, cb) {
+    spawn: function (cmd, params, cwd, cb) {
         var raw = cmd + ' ' + params.join(' ');
 
         if (true) {
             cliz.debug(raw);
         }
 
-        let wrapper = spawn(cmd, params);
+        let wrapper = spawn(cmd, params, { cwd: cwd });
         let stdoutLastLine = '';
         let stderrLastLine = '';
         let lastLine = '';
@@ -33,7 +34,8 @@ module.exports = {
         wrapper.stdout.on('data', function (data) {
             let line = data.toString().trim();
             if (line.length == 0) { return; }
-            if (line.length > 30 && stdoutLastLine.length > 30
+            else if (line == '.') { newline = ''; }
+            else if (line.length > 30 && stdoutLastLine.length > 30
                 && line.substr(0, 30) == stdoutLastLine.substr(0, 30)) {
                 process.stdout.clearLine();
                 process.stdout.cursorTo(0);
@@ -49,6 +51,7 @@ module.exports = {
         wrapper.stderr.on('data', function (data) {
             let line = data.toString().trim();
             if (line.length == 0) { return; }
+            else if (line == '.') { newline = ''; }
             process.stderr.write(newline + line);
             stderrLastLine = line;
             lastLine = line
@@ -88,5 +91,26 @@ module.exports = {
                 break;
         }
         process.exit()
+    },
+
+    /**
+     *
+     * @param url
+     * @param file
+     * @param cb
+     */
+    download: function (url, file, cb) {
+        https.get(url, (resp) => {
+            let data = '';
+            resp.on('data', (chunk) => { data += chunk; });
+            resp.on('end', () => {
+                try {
+                    fu.writeFile(file, data)
+                    cb()
+                } catch (e) {
+                    cliz.fatal(e.message);
+                }
+            })
+        });
     }
 };
