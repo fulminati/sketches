@@ -17,7 +17,7 @@ $ cd <MyArduinoProject>
 - Read more: [Advanced project management](https://github.com/fulminati/arduinodk/wiki/advanced-project-management)
 
 ### Configure your project
-Every Arduinodk project are configured by 'sketches.yml' file
+Each ArduinoDK project can be configured via the 'sketches.yml' file
 ```yml
 name: <MyArduinoProject>
 version: 0.0.1
@@ -26,7 +26,7 @@ sketches:
     board: uno
     port: COM3
 ```
-- Read more: [Reference: sketch.yml](https://github.com/fulminati/arduinodk/wiki/Reference:-sketch.yml)
+- Read more: [Reference: sketch.yml](https://github.com/fulminati/arduinodk/wiki/Reference:-sketches.yml)
 
 ### Verify operation
 Verify source code of current project
