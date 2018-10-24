@@ -5,7 +5,8 @@ ArduinoDK is a command-line tool inspired by package manager like NPM and YARN.
 > If you are fascinated by the **package.json** then you will love **sketches.yml**.
 
 ## Get Started
-```bbabasbash
+Install the command-line utility
+```bash
 $ npm install -g arduinodk
 ```
 
@@ -26,7 +27,7 @@ sketches:
     board: uno
     port: COM3
 ```
-- Read more: [Reference: sketches.yml](https://github.com/fulminati/arduinodk/wiki/Reference:-sketches.yml)
+Read more: [Reference: sketches.yml](https://github.com/fulminati/arduinodk/wiki/Reference:-sketches.yml)
 
 ### Verify operation
 Verify source code of current project
