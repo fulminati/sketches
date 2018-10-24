@@ -26,7 +26,7 @@ sketches:
     board: uno
     port: COM3
 ```
-- Read more: [Reference: sketch.yml](https://github.com/fulminati/arduinodk/wiki/Reference:-sketches.yml)
+- Read more: [Reference: sketches.yml](https://github.com/fulminati/arduinodk/wiki/Reference:-sketches.yml)
 
 ### Verify operation
 Verify source code of current project
