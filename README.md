@@ -16,7 +16,7 @@ Create your first project
 $ arduinodk init <MyArduinoProject>
 $ cd <MyArduinoProject>
 ```
-> Read more: [Advanced project management](https://github.com/fulminati/arduinodk/wiki/advanced-project-management)
+> Read more on [project management](https://github.com/fulminati/arduinodk/wiki/Project-management)
 
 ### Configure your project
 Each ArduinoDK project can be configured via the 'sketches.yml' file
@@ -28,7 +28,7 @@ sketches:
     board: uno
     port: COM3
 ```
-> Read more: [Reference: sketches.yml](https://github.com/fulminati/arduinodk/wiki/Reference:-sketches.yml)
+> Read more on [sketches.yml reference](https://github.com/fulminati/arduinodk/wiki/Reference:-sketches.yml)
 
 ### Verify operation
 Verify source code of current project
@@ -59,7 +59,6 @@ $ arduinodk upload
 | verify        | 10%      |          |
 
 ## Read more
-
  - [Install Boards and Libraries](https://github.com/fulminati/arduinodk/wiki/Install-boards-and-libraries)
 
 ## References
