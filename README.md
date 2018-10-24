@@ -11,11 +11,12 @@ $ npm install -g arduinodk
 ```
 
 ### Create project from scratch
+Create your first project
 ```bash
 $ arduinodk init <MyArduinoProject>
 $ cd <MyArduinoProject>
 ```
-- Read more: [Advanced project management](https://github.com/fulminati/arduinodk/wiki/advanced-project-management)
+> Read more: [Advanced project management](https://github.com/fulminati/arduinodk/wiki/advanced-project-management)
 
 ### Configure your project
 Each ArduinoDK project can be configured via the 'sketches.yml' file
@@ -27,7 +28,7 @@ sketches:
     board: uno
     port: COM3
 ```
-Read more: [Reference: sketches.yml](https://github.com/fulminati/arduinodk/wiki/Reference:-sketches.yml)
+> Read more: [Reference: sketches.yml](https://github.com/fulminati/arduinodk/wiki/Reference:-sketches.yml)
 
 ### Verify operation
 Verify source code of current project
