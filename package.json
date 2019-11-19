@@ -25,7 +25,7 @@
         "glob": "^7.1.2",
         "html-minifier": "^3.5.13",
         "is-root": "^2.0.0",
-        "nodejs-fu": "^0.2.1",
+        "nodejs-fu": "^0.2.2",
         "nodemon": "^1.18.4",
         "serialport": "^7.0.2",
         "string-argv": "^0.1.1",
