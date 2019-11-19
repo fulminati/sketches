@@ -19,7 +19,7 @@
     },
     "dependencies": {
         "boor": "0.0.2",
-        "cliz": "0.0.14",
+        "cliz": "0.0.16",
         "colors": "^1.1.2",
         "deepmerge": "^2.1.1",
         "glob": "^7.1.2",
