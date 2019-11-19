@@ -1,6 +1,6 @@
 # Sketches
 
-Sketches is a command-line tool inspired by package manager like NPM and YARN.  
+Sketches is a command-line tool inspired by package manager like NPM.  
 If you are fascinated by the **package.json** then you will love **Sketches.yml**.
 
 ## Get Started
@@ -10,7 +10,7 @@ Install the Sketches via NPM
 $ npm install -g sketches
 ```
 
-> See more on [Install NodeJS and NPM](https://github.com/fulminati/sketches/wiki/install-nodejs-and-npm)
+ - See more on [Install NodeJS and NPM](https://github.com/fulminati/sketches/wiki/install-nodejs-and-npm)
 
 ### Create project from scratch
 
@@ -19,7 +19,7 @@ Create your first project
 $ sketches init ArduinoProject
 $ cd ArduinoProject
 ```
-> See more on [Project management](https://github.com/fulminati/sketches/wiki/project-management)
+ - See more on [Project management](https://github.com/fulminati/sketches/wiki/project-management)
 
 ### Configure your project
 
@@ -34,7 +34,7 @@ sketches:
     port: COM3
 ```
 
-> See more on [Sketches.yml reference](https://github.com/fulminati/arduinodk/wiki/Reference:-sketches.yml)
+ - See more on [Sketches.yml reference](https://github.com/fulminati/arduinodk/wiki/Reference:-sketches.yml)
 
 ### Verify operation
 
