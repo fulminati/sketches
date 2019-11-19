@@ -1,25 +1,31 @@
 # Sketches
 
-ArduinoDK is a command-line tool inspired by package manager like NPM and YARN.
+Sketches is a command-line tool inspired by package manager like NPM and YARN.
 
 > If you are fascinated by the **package.json** then you will love **sketches.yml**.
 
 ## Get Started
-Install the command-line utility
+
+Install the Sketches via NPM
 ```bash
-$ npm install -g arduinodk
+$ npm install -g sketches
 ```
+
+> See more on [Install NodeJS and NPM](https://github.com/fulminati/sketches/wiki/install-nodejs-and-npm)
 
 ### Create project from scratch
+
 Create your first project
 ```bash
-$ arduinodk init <MyArduinoProject>
-$ cd <MyArduinoProject>
+$ sketches init ArduinoProject
+$ cd ArduinoProject
 ```
-> Read more on [project management](https://github.com/fulminati/arduinodk/wiki/Project-management)
+> See more on [Project management](https://github.com/fulminati/sketches/wiki/project-management)
 
 ### Configure your project
-Each ArduinoDK project can be configured via the 'sketches.yml' file
+
+Each Sketches project can be configured via the 'Sketches.yml' file
+
 ```yml
 name: <MyArduinoProject>
 version: 0.0.1
@@ -28,15 +34,18 @@ sketches:
     board: uno
     port: COM3
 ```
-> Read more on [sketches.yml reference](https://github.com/fulminati/arduinodk/wiki/Reference:-sketches.yml)
+
+> See more on [Sketches.yml reference](https://github.com/fulminati/arduinodk/wiki/Reference:-sketches.yml)
 
 ### Verify operation
+
 Verify source code of current project
 ```bash
 $ arduinodk verify
 ```
 
 ### Upload operation
+
 Upload binary into arduino board
 ```bash
 $ arduinodk upload
@@ -58,7 +67,7 @@ $ arduinodk upload
 | upload        | 10%      |          |
 | verify        | 10%      |          |
 
-## Read more
+## See more
  - [Install Boards and Libraries](https://github.com/fulminati/arduinodk/wiki/Install-boards-and-libraries)
 
 ## References
@@ -67,4 +76,3 @@ $ arduinodk upload
  - https://cassiopeia.hk/rgb-wifi/
  - https://www.anginf.de/?p=600
  - https://github.com/doleron/esp8266-1-channel-relay-board-with-mqtt
- 
