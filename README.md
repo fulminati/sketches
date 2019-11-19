@@ -1,4 +1,4 @@
-# ArduinoDK
+# Sketches
 
 ArduinoDK is a command-line tool inspired by package manager like NPM and YARN.
 
