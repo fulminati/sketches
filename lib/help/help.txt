@@ -1,5 +1,5 @@
-Usage: arduinodk <command> [args...]
-       arduinodk [--help|--version]
+Usage: sketches <command> [args...]
+       sketches [--help|--version]
 
  init                      init project structure
  install                   install project dependencies
@@ -14,4 +14,4 @@ Usage: arduinodk <command> [args...]
  --help [command]   show help instructions
  --version          show installed version
 
-Documentation can be found at https://github.com/fulminati/arduinodk
+Documentation can be found at https://github.com/fulminati/sketches
