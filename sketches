@@ -1,16 +1,11 @@
 #!/usr/bin/env node
 /*!
- * arduinodk
- * Copyright(c) 2016-2017 Francesco Bianco
+ * Sketches
+ * Copyright(c) 2016-2019 Francesco Bianco
  * MIT Licensed
  */
 
 'use strict';
 
-const fs = require('fs')
-    , cwd = process.cwd()
-    , join = require('path').join
-    , local = join(cwd, './node_modules/arduinodk/src/cli.js')
-    , cli = fs.existsSync(local) ? local : '../src/cli.js'
-
-require(cli).run(process.argv.slice(2))
+const sketches = require('path').join(process.cwd(), './node_modules/sketches')
+require(require('fs').existsSync(sketches) ? sketches : '.').cli.run(process.argv.slice(2))
