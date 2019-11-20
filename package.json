@@ -30,7 +30,7 @@
         "nodemon": "^1.18.4",
         "serialport": "^7.0.2",
         "string-argv": "^0.1.1",
-        "username": "^3.0.0"
+        "username": "^5.1.0"
     },
     "devDependencies": {
         "chai": "^3.5.0",
