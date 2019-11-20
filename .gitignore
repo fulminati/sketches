@@ -60,3 +60,6 @@ typings/
 # IDEs
 .idea/
 .vscode/
+
+# Temp
+temp/

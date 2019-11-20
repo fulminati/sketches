@@ -6,14 +6,14 @@
  https://git.io/fAF8y
  */
 
-const filter = require('arduinodk-filter')
+const filter = require('sketches-filter')
 
 module.exports = {
 
     /**
      * Define custom filter token @myFilter(...).
      */
-    filter: 'myFilter',
+    filter: 'filter',
 
     /**
      * Process before verify.

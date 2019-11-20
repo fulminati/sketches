@@ -1,9 +1,0 @@
-name: ArduinoProject
-version: 0.0.1
-sketches:
-  ArduinoProject:
-    board: uno
-    port:
-      win: COM3
-  ping:
-    board: uno
