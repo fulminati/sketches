@@ -2,8 +2,8 @@ name: ArduinoProject
 version: 0.0.1
 sketches:
   ArduinoProject:
-    board: uno
+    board: arduino:avr:nano:cpu=atmega328old
     port:
       win: COM3
   NewSketch:
-    board: uno
+    board: nano

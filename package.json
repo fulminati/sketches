@@ -18,7 +18,7 @@
         "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec --recursive"
     },
     "dependencies": {
-        "boor": "0.0.2",
+        "boor": "0.0.3",
         "cliz": "0.0.16",
         "colors": "^1.1.2",
         "deepmerge": "^2.1.1",
