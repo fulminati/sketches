@@ -2,6 +2,8 @@ name: ArduinoProject
 version: 0.0.1
 sketches:
   ArduinoProject:
+    filters:
+      - param
     board: arduino:avr:nano:cpu=atmega328old
     port: COM3 | /dev/ttyUSB0
 
