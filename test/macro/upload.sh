@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
 
-temp=${PWD}/temp
-env_file=${temp}/../../../.env
-sketches=${temp}/../../../sketches
-fixtures=${temp}/../../fixtures
+temp=$(dirname $(realpath $0))/../temp
+env_file=${temp}/../../.env
+sketches=${temp}/../../sketches
+fixtures=${temp}/../fixtures
 
 rm -fr ${temp}
 mkdir -p ${temp}

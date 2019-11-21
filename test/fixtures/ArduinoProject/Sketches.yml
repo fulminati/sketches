@@ -9,3 +9,6 @@ sketches:
 
   NewSketch:
     board: nano
+
+  NanoOld:
+    board: arduino:avr:nano:cpu=atmega328old
