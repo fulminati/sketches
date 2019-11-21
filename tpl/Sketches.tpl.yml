@@ -1,9 +1,8 @@
 
-name: {{PROJECT_NAME}}
+name: {{PROJECT}}
 version: 0.0.1
 
 sketches:
-  {{PROJECT_NAME}}:
+  {{PROJECT}}:
     board: uno
-    port:
-      win: COM3
+    port: COM3 | /dev/ttyUSB0

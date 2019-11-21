@@ -13,14 +13,14 @@ module.exports = {
     /**
      * Define custom filter token @myFilter(...).
      */
-    filter: 'filter',
+    tag: 'filter',
 
     /**
      * Process before verify.
      *
      * @param sketch
      */
-    onBeforeVerify: function (sketch) {
+    apply: function (sketch) {
         return filter.onBefore(sketch, this.filter, this.processor)
     },
 
