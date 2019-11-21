@@ -9,6 +9,10 @@ Install the Sketches via NPM
 ```bash
 $ npm install -g sketches
 ```
+or 
+```bash
+$ sudo npm install -g sketches --unsafe-perm=true --allow-root
+```
 
  - See more on [Install NodeJS and NPM](https://github.com/fulminati/sketches/wiki/install-nodejs-and-npm)
 
