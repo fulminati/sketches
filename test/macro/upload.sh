@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-temp=$(dirname $(realpath $0))/temp
+temp=${PWD}/temp
 env_file=${temp}/../../../.env
 sketches=${temp}/../../../sketches
 fixtures=${temp}/../../fixtures
@@ -14,6 +14,6 @@ cp -R ${fixtures}/ArduinoProject .
 cd ArduinoProject
 cp ${env_file} .
 
-#${sketches} install
+${sketches} install
 
-${sketches} upload ArduinoProject
+${sketches} upload NanoOld --roger-monitor

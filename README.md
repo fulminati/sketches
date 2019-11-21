@@ -38,20 +38,20 @@ sketches:
     port: COM3
 ```
 
- - See more on [Sketches.yml reference](https://github.com/fulminati/arduinodk/wiki/Reference:-sketches.yml)
+ - See more on [Sketches.yml reference](https://github.com/fulminati/Sketches/wiki/Reference:-sketches.yml)
 
 ### Verify operation
 
 Verify source code of current project
 ```bash
-$ arduinodk verify
+$ Sketches verify
 ```
 
 ### Upload operation
 
 Upload binary into arduino board
 ```bash
-$ arduinodk upload
+$ Sketches upload
 ```
 
 ## Roadmap
@@ -71,7 +71,7 @@ $ arduinodk upload
 | verify        | 10%      |          |
 
 ## See more
- - [Install Boards and Libraries](https://github.com/fulminati/arduinodk/wiki/Install-boards-and-libraries)
+ - [Install Boards and Libraries](https://github.com/fulminati/Sketches/wiki/Install-boards-and-libraries)
 
 ## References
  - https://github.com/arduino/Arduino/blob/ide-1.5.x/build/shared/manpage.adoc

@@ -8,7 +8,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/fulminati/arduinodk.git"
+        "url": "https://github.com/fulminati/Sketches.git"
     },
     "bin": {
         "sketches": "./sketches"

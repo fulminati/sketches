@@ -2,7 +2,7 @@
  File: ArduinoProject.js
  <write description here>
 
- ArduinoDK
+ Sketches
  https://git.io/fAF8y
  */
 
