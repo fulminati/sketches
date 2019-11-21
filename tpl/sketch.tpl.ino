@@ -1,17 +1,17 @@
 /*
- File: {{FILE_NAME}}
+ File: {{FILE}}
  <write description here>
 
  ArduinoDK
  https://git.io/fAF8y
  */
 
-#include "{{SKETCH_NAME}}.h"
+#include "{{SKETCH}}.h"
 
 void setup() {
-  pinMode({{SKETCH_PREFIX}}_OUTPUT, OUTPUT);
+  pinMode({{PREFIX}}_OUTPUT, OUTPUT);
 }
 
 void loop() {
-  digitalWrite({{SKETCH_PREFIX}}_OUTPUT, HIGH);
+  digitalWrite({{PREFIX}}_OUTPUT, HIGH);
 }

@@ -1,37 +1,44 @@
 /*
- File: {{FILE_NAME}}
+ File: {{FILE}}
  <write description here>
 
  ArduinoDK
  https://git.io/fAF8y
  */
 
-const filter = require('sketches-filter')
+const quote = require('sketces-filter').quote
+    , applyTag = require('sketces-filter').applyTag
+    , resetTag = require('sketces-filter').resetTag
 
 module.exports = {
 
     /**
      * Define custom filter token @myFilter(...).
      */
-    tag: 'filter',
+    tag: 'tag',
 
     /**
-     * Process before verify.
      *
      * @param sketch
      */
     apply: function (sketch) {
-        return filter.onBefore(sketch, this.filter, this.processor)
+        return applyTag({
+            tag: this.tag,
+            path: sketch.path,
+            processor: this.processor
+        })
     },
 
     /**
-     * Process after verify
      *
      * @param sketch
      * @returns {*}
      */
-    onAfterVerify: function (sketch) {
-        return filter.onAfter(sketch, this.filter)
+    reset: function (sketch) {
+        return resetTag({
+            tag: this.tag,
+            path: sketch.path
+        })
     },
 
     /**
@@ -41,7 +48,7 @@ module.exports = {
      * @param code
      * @returns {string | void}
      */
-    processor: function (file, args) {
-        return filter.quote(args[0].toUpperCase())
+    processor: function (args) {
+        return quote(args[0].toUpperCase())
     }
-};
+}

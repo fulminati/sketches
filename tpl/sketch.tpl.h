@@ -1,9 +1,9 @@
 /*
- File: {{FILE_NAME}}
+ File: {{FILE}}
  <write description here>
 
  ArduinoDK
  https://git.io/fAF8y
  */
 
-const int {{SKETCH_PREFIX}}_OUTPUT = 13;
+const int {{PREFIX}}_OUTPUT = 13;
