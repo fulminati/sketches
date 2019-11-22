@@ -29,7 +29,7 @@
         "nodejs-fu": "^0.2.2",
         "nodemon": "^1.18.4",
         "serialport": "^8.0.5",
-        "sketches-filter": "0.0.18",
+        "sketches-filter": "0.0.19",
         "string-argv": "^0.1.1",
         "username": "^5.1.0"
     },
