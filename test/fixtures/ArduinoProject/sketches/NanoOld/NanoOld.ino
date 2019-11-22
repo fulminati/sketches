@@ -1,4 +1,4 @@
-Ar/*
+/*
  File: NanoOld.ino
  <write description here>
 
@@ -10,11 +10,11 @@ Ar/*
 
 void setup() {
   Serial.begin(@param('boudRate'));
-  pinMode(NEWSKETCH_OUTPUT, OUTPUT);
+  pinMode(NANO_OUTPUT, OUTPUT);
 }
 
 void loop() {
-  digitalWrite(NEWSKETCH_OUTPUT, HIGH);
+  digitalWrite(NANO_OUTPUT, HIGH);
   Serial.println("Hello World!");
   delay(2000);
 }

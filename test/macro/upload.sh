@@ -14,6 +14,6 @@ cp -R ${fixtures}/ArduinoProject .
 cd ArduinoProject
 cp ${env_file} .
 
-${sketches} install
+#${sketches} install
 
 ${sketches} upload NanoOld --roger-monitor

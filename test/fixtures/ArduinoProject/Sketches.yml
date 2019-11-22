@@ -11,4 +11,7 @@ sketches:
     board: nano
 
   NanoOld:
-    board: arduino:avr:nano:cpu=atmega328old
+    cpu: atmega328old
+    board: arduino:nano
+    filters:
+      - param
